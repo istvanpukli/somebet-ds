@@ -1,0 +1,52 @@
+/* Somebet design system · brand tokens.
+   Generated from the Figma "Brand" collection (mode: Somebet), 2026-10-14.
+   Primitives are not exported, so their values are resolved to raw values here.
+   Set data-brand="somebet" on <html>. A different brand ships its own
+   brand-<name>.css that defines the same variable names. */
+[data-brand="somebet"] {
+  --brand-alt-accent-hover: #6348b9;
+  --brand-alt-accent-pressed: #775ecb;
+  --brand-alt-accent-subtle: #a296e0;
+  --brand-alt-accent-surface: #4f3b99;
+  --brand-alt-accent-surface-raised: #352a70;
+  --brand-featured-300: #f2effc;
+  --brand-featured-500: #1d1a4a;
+  --brand-featured-700: #150630;
+  --brand-font-body: "Barlow";
+  --brand-font-heading: "Inter";
+  --brand-font-heading-style: "Semi Bold";
+  --brand-highlight: #e9a800;
+  --brand-name: "Somebet";
+  --brand-neutral-0: #ffffff;
+  --brand-neutral-100: #e9e9e6;
+  --brand-neutral-200: #cdcdcd;
+  --brand-neutral-300: #b1b2b5;
+  --brand-neutral-400: #95989d;
+  --brand-neutral-50: #f8f7f3;
+  --brand-neutral-500: #7b7e86;
+  --brand-neutral-600: #61646b;
+  --brand-neutral-700: #474a52;
+  --brand-neutral-800: #2f3339;
+  --brand-neutral-900: #191c23;
+  --brand-neutral-950: #0f1218;
+  --brand-overlay: #0f1218bf;
+  --brand-primary-100: #fdefcf;
+  --brand-primary-200: #f9deaa;
+  --brand-primary-300: #f4cc83;
+  --brand-primary-400: #efba56;
+  --brand-primary-500: #e9a800;
+  --brand-primary-600: #c68b00;
+  --brand-primary-650: #ba8600;
+  --brand-primary-750: #936a00;
+  --brand-primary-800: #785100;
+  --brand-radius-container: 12px;
+  --brand-radius-control: 8px;
+  --brand-secondary-100: #dae1f0;
+  --brand-secondary-200: #b4c1dd;
+  --brand-secondary-300: #8fa0c9;
+  --brand-secondary-500: #4a62a0;
+  --brand-secondary-600: #395086;
+  --brand-secondary-700: #293f6e;
+  --brand-secondary-800: #1a2e56;
+  --brand-secondary-900: #0c1b3b;
+}

@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en" data-brand="somebet" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Somebet tokens demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500&family=Inter:wght@600&display=swap" rel="stylesheet">
+<!-- Swap brand-somebet.css for another brand file to re-skin everything below. -->
+<link rel="stylesheet" href="../tokens/brand-somebet.css">
+<link rel="stylesheet" href="../tokens/theme.css">
+<link rel="stylesheet" href="../tokens/context.css">
+<link rel="stylesheet" href="../tokens/layout.css">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--background);
+    color: var(--on-background);
+    font-family: var(--brand-font-body), system-ui, sans-serif;
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-line-height);
+    min-height: 100vh;
+  }
+  h1, h2, h3 { font-family: var(--brand-font-heading), system-ui, sans-serif; font-weight: 600; margin: 0; }
+
+  /* Page chrome (outside the design-system screen) */
+  .toolbar {
+    display: flex; flex-wrap: wrap; gap: 24px; align-items: center;
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+  }
+  .toolbar h1 { font-size: 16px; margin-right: auto; }
+  .toggle { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; }
+  .toggle .seg { display: inline-flex; border: 1px solid var(--border-default); border-radius: var(--brand-radius-control); overflow: hidden; }
+  .toggle button {
+    font: inherit; font-weight: 500; color: var(--on-background); background: transparent;
+    border: 0; padding: 6px 14px; cursor: pointer;
+  }
+  .toggle button[aria-pressed="true"] { background: var(--primary); color: var(--on-primary); }
+  .stage-wrap { padding: 24px; display: flex; justify-content: center; }
+  .stage { width: 375px; max-width: 100%; transition: width .2s ease; }
+  .stage[data-width="wide"] { width: 1200px; }
+  .stage[data-width="wide"] .screen { border-radius: 0; }
+
+  /* The design-system screen. .layout is the size container; its child gets the layout tokens. */
+  .layout { container-type: inline-size; }
+  .screen {
+    background: var(--ctx-surface);
+    color: var(--ctx-on-surface-high);
+    border-radius: var(--brand-radius-container);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+
+  /* App header: Header context, height and padding from Layout, logo form from --logo-form */
+  .app-header {
+    background: var(--ctx-surface);
+    color: var(--ctx-on-surface-high);
+    height: var(--size-header-height);
+    padding: 0 var(--space-inset-page);
+    display: flex; align-items: center; gap: var(--space-inline-control);
+  }
+
+  /* Logo: verbatim SVG exports of the Figma Logo component. Logos are not token-coloured. */
+  .logo { display: inline-flex; align-items: center; margin-right: auto; }
+  .logo svg { display: block; } /* native Figma size: Compact 40 × 40, Horizontal 97 × 32 */
+  .logo .logo-horizontal { display: none; }
+  .logo[data-form="Horizontal"] .logo-horizontal { display: block; }
+  .logo[data-form="Horizontal"] .logo-compact { display: none; }
+
+  .body {
+    padding: var(--space-inset-page);
+    display: grid; gap: var(--space-stack-section);
+    grid-template-columns: 1fr;
+    max-width: var(--size-container-page); width: 100%; margin: 0 auto;
+  }
+  @container (min-width: 1024px) {
+    .body { grid-template-columns: var(--size-container-form) 1fr; align-items: start; }
+  }
+
+  .section-title h2 { font-size: var(--type-headline-size); line-height: var(--type-headline-line-height); }
+  .section-title p { margin: 4px 0 0; color: var(--ctx-on-surface-medium); }
+
+  /* Card (Default context = raised) */
+  .card {
+    background: var(--ctx-surface-variant);
+    color: var(--ctx-on-surface-high);
+    border-radius: var(--brand-radius-container);
+    padding: var(--space-inset-container);
+    display: grid; gap: var(--space-stack-section);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--brand-neutral-950) 30%, transparent);
+  }
+  .card-title { font-size: var(--type-title-size); line-height: var(--type-title-line-height); color: var(--ctx-on-surface-high); }
+  .stack { display: grid; gap: var(--space-stack-section); align-content: start; }
+
+  /* Form */
+  .fields { display: grid; gap: var(--space-stack-field); }
+  /* Input (Figma "Input"). Field: no fill, 1px border/default, control radius and height, inset/control padding,
+     8px gap; value body on-surface/high, placeholder = label in on-surface/medium. Focus: 2px border/focus.
+     Focus, Filled and Error: floating label (body-small Medium, on-surface/medium, no fill, 8px side padding)
+     at x 8, y -8. Error: 2px error border, icon/warning-circle in error after the trailing action,
+     assistive text (body-small) in error. Error while focused looks like Error.
+     The border is a notched outline (see "Outline" below), so the label needs no background. */
+  /* Outline: the field border as a <fieldset>. The browser cuts a gap in the top border for the <legend>,
+     which holds an invisible copy of the label, so the gap always matches the label width and works on any
+     background. Legend height 16 = the label; its centre sits on the field's top edge (label at x 8, y -8).
+     top = -(16 - border) / 2 keeps the border on the field edge; padding + border = 8 keeps the gap at x 8. */
+  .outline {
+    position: absolute; left: 0; right: 0; bottom: 0; top: -7.5px; margin: 0; min-width: 0;
+    padding: 0 7px; border: 1px solid var(--ctx-border-default); border-radius: var(--brand-radius-control);
+    pointer-events: none;
+  }
+  .outline legend {
+    float: unset; width: auto; height: 16px; padding: 0; max-width: 0.01px; overflow: hidden; visibility: hidden; white-space: nowrap;
+    font-size: var(--type-body-small-size); line-height: var(--type-body-small-line-height); font-weight: 500;
+  }
+  .outline legend span { display: inline-block; padding: 0 var(--space-inline-control); }
+
+  .input { display: grid; gap: var(--space-stack-assist); }
+  .input-field {
+    position: relative; display: flex; align-items: center; gap: var(--space-inline-control);
+    height: var(--size-control-height); padding: 0 var(--space-inset-control);
+  }
+  .input-field input {
+    flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; outline: none; background: transparent;
+    font: inherit; font-size: var(--type-body-size); line-height: var(--type-body-line-height); color: var(--ctx-on-surface-high);
+  }
+  .input-field input::placeholder { color: var(--ctx-on-surface-medium); opacity: 1; }
+  .input-field .floating {
+    position: absolute; left: 8px; top: -8px; display: none;
+    padding: 0 var(--space-inline-control);
+    font-size: var(--type-body-small-size); line-height: var(--type-body-small-line-height); font-weight: 500; color: var(--ctx-on-surface-medium);
+  }
+  .input-field:focus-within .outline { top: -7px; padding: 0 6px; border-width: 2px; border-color: var(--ctx-border-focus); }
+  .input-field:focus-within .floating, .input.filled .floating, .input.error .floating { display: block; }
+  .input-field:focus-within .outline legend, .input.filled .outline legend, .input.error .outline legend { max-width: 100%; }
+  .input-field:focus-within input::placeholder, .input.error input::placeholder { color: transparent; }
+  .input-field .validation { display: none; flex: none; width: var(--size-icon-md); height: var(--size-icon-md); color: var(--ctx-error); }
+  .input.error .outline { top: -7px; padding: 0 6px; border-width: 2px; border-color: var(--ctx-error); }
+  .input.error .validation { display: block; }
+  /* The assistive row always keeps its one-line height (as in Figma), so an error never shifts the layout. */
+  .input .assistive { margin: 0; min-height: var(--type-body-small-line-height); padding: 0 var(--space-inset-control); font-size: var(--type-body-small-size); line-height: var(--type-body-small-line-height); color: var(--ctx-on-surface-medium); }
+  .input.error .assistive { color: var(--ctx-error); }
+  .actions { display: grid; gap: var(--space-stack-group); }
+  .link { color: var(--ctx-on-surface-highlight); text-align: center; text-decoration: underline; }
+
+  /* Buttons: sizes and min widths from Layout, colours from Context */
+  .btn {
+    font: inherit; font-weight: 500; cursor: pointer; border: 1px solid transparent;
+    border-radius: var(--brand-radius-control);
+    height: var(--size-control-height); min-width: var(--size-button-min-width-regular);
+    padding: 0 var(--space-inset-control);
+    background: var(--ctx-primary); color: var(--ctx-on-primary);
+    font-size: var(--type-body-large-size); line-height: var(--type-body-large-line-height); /* Regular and Large */
+  }
+  .btn:hover { background: var(--ctx-primary-hover); }
+  .btn:active { background: var(--ctx-primary-pressed); }
+  .btn.secondary { background: var(--ctx-secondary); color: var(--ctx-on-secondary); }
+  .btn.secondary:hover { background: var(--ctx-secondary-hover); }
+  .btn.secondary:active { background: var(--ctx-secondary-pressed); }
+  .btn.tertiary { background: var(--ctx-tertiary); color: var(--ctx-on-tertiary); border-color: var(--ctx-border-default); }
+  .btn.tertiary:hover { background: var(--ctx-tertiary-hover); }
+  .btn.tertiary:active { background: var(--ctx-tertiary-pressed); }
+  .btn.small { height: var(--size-control-height-small); min-width: var(--size-button-min-width-small); font-size: var(--type-body-size); line-height: var(--type-body-line-height); }
+  .btn.large { height: var(--size-control-height-large); min-width: var(--size-button-min-width-large); }
+  .btn:disabled { background: var(--ctx-primary-disabled); color: var(--ctx-on-primary-disabled); cursor: not-allowed; }
+  .btn.block { width: 100%; }
+  .row { display: flex; flex-wrap: wrap; gap: var(--space-inline-button-group); align-items: center; }
+  .app-header .btn { min-width: 0; height: var(--size-control-height-small); }
+
+  /* Alternate promo card: switch the context with one class */
+  .promo {
+    background: var(--ctx-surface-variant);
+    color: var(--ctx-on-surface-high);
+    border-radius: var(--brand-radius-container);
+    padding: var(--space-inset-container);
+    display: grid; gap: var(--space-stack-group);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--brand-neutral-950) 30%, transparent);
+  }
+  .promo h3 { font-size: var(--type-title-size); line-height: var(--type-title-line-height); }
+  .promo p { margin: 0; color: var(--ctx-on-surface-medium); }
+  .promo .highlight { color: var(--ctx-on-surface-highlight); font-weight: 500; }
+  .caption { font-size: var(--type-caption-size); line-height: var(--type-caption-line-height); color: var(--ctx-on-surface-low); }
+  /* Checkbox: 24px box, 2px border/strong, control radius; On = primary fill + Figma icon/check (16 × 16) in on-primary */
+  .checkbox { display: inline-flex; align-items: center; gap: var(--space-inline-control); justify-self: start; cursor: pointer;
+    font-size: var(--type-body-large-size); line-height: var(--type-body-large-line-height); color: var(--ctx-on-surface-high); }
+  .checkbox input {
+    appearance: none; -webkit-appearance: none; margin: 0; flex: none; cursor: pointer;
+    width: 24px; height: 24px; border: 2px solid var(--ctx-border-strong); border-radius: var(--brand-radius-control);
+    background: transparent; display: grid; place-items: center;
+  }
+  .checkbox input::after {
+    content: ""; width: 16px; height: 16px; background: var(--ctx-on-primary); visibility: hidden;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M21.531 6.28104L9.53104 18.281C9.46139 18.3508 9.37867 18.4061 9.28762 18.4438C9.19657 18.4816 9.09898 18.501 9.00042 18.501C8.90186 18.501 8.80426 18.4816 8.71321 18.4438C8.62216 18.4061 8.53945 18.3508 8.46979 18.281L3.21979 13.031C3.07906 12.8903 3 12.6994 3 12.5004C3 12.3014 3.07906 12.1105 3.21979 11.9698C3.36052 11.8291 3.55139 11.75 3.75042 11.75C3.94944 11.75 4.14031 11.8291 4.28104 11.9698L9.00042 16.6901L20.4698 5.21979C20.6105 5.07906 20.8014 5 21.0004 5C21.1994 5 21.3903 5.07906 21.531 5.21979C21.6718 5.36052 21.7508 5.55139 21.7508 5.75042C21.7508 5.94944 21.6718 6.14031 21.531 6.28104Z'/%3E%3C/svg%3E") center / contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M21.531 6.28104L9.53104 18.281C9.46139 18.3508 9.37867 18.4061 9.28762 18.4438C9.19657 18.4816 9.09898 18.501 9.00042 18.501C8.90186 18.501 8.80426 18.4816 8.71321 18.4438C8.62216 18.4061 8.53945 18.3508 8.46979 18.281L3.21979 13.031C3.07906 12.8903 3 12.6994 3 12.5004C3 12.3014 3.07906 12.1105 3.21979 11.9698C3.36052 11.8291 3.55139 11.75 3.75042 11.75C3.94944 11.75 4.14031 11.8291 4.28104 11.9698L9.00042 16.6901L20.4698 5.21979C20.6105 5.07906 20.8014 5 21.0004 5C21.1994 5 21.3903 5.07906 21.531 5.21979C21.6718 5.36052 21.7508 5.55139 21.7508 5.75042C21.7508 5.94944 21.6718 6.14031 21.531 6.28104Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+  .checkbox input:checked { background: var(--ctx-primary); border-color: var(--ctx-primary); }
+  .checkbox input:checked::after { visibility: visible; }
+  .checkbox input:focus-visible { outline: 2px solid var(--ctx-border-focus); outline-offset: 2px; }
+  /* Input trailing action (password visibility) with Figma icons */
+  .icon-btn {
+    flex: none; width: var(--size-icon-md); height: var(--size-icon-md); padding: 0; border: 0; background: transparent;
+    color: var(--ctx-on-surface-high); cursor: pointer; display: grid; place-items: center;
+  }
+  .icon-btn:focus-visible { outline: 2px solid var(--ctx-border-focus); outline-offset: 2px; }
+  .icon-btn svg { width: 100%; height: 100%; } /* Figma icon/eye, icon/eye-slash (24 × 24), on-surface/high */
+  .icon-btn .eye-off { display: none; }
+  .icon-btn[aria-pressed="true"] .eye-on { display: none; }
+  .icon-btn[aria-pressed="true"] .eye-off { display: block; }
+  /* Select (Figma "Select" + "Select list item"). Field: no fill, 1px border/default, control radius and height,
+     inset/control padding, 8px gap; placeholder body on-surface/medium; caret icon/caret-down on-surface/medium.
+     Focus: 2px border/focus. Focus and Filled: floating label (body-small Medium, on-surface/medium, no fill,
+     8px side padding) at x 8, y -8. List: surface-variant, control radius, 8px top/bottom padding, elevation/2.
+     Item: min height control, 8/16 padding, body on-surface/high; Hover fill surface; Selected adds icon/check in on-surface/highlight. */
+  .select { position: relative; width: 320px; max-width: 100%; }
+  .select-field {
+    position: relative; width: 100%; display: flex; align-items: center; gap: var(--space-inline-control);
+    height: var(--size-control-height); padding: 0 var(--space-inset-control);
+    background: transparent; border: 0; border-radius: var(--brand-radius-control); outline: none;
+    font: inherit; text-align: left; cursor: pointer;
+  }
+  .select-field .text { flex: 1; min-width: 0; font-size: var(--type-body-size); line-height: var(--type-body-line-height); color: var(--ctx-on-surface-medium); }
+  .select-field .caret { flex: none; width: var(--size-icon-md); height: var(--size-icon-md); color: var(--ctx-on-surface-medium); }
+  .select-field .floating {
+    position: absolute; left: 8px; top: -8px; display: none;
+    padding: 0 var(--space-inline-control);
+    font-size: var(--type-body-small-size); line-height: var(--type-body-small-line-height); font-weight: 500; color: var(--ctx-on-surface-medium);
+  }
+  .select-box { position: relative; }
+  .select.open .outline, .select-box:has(.select-field:focus-visible) .outline { top: -7px; padding: 0 6px; border-width: 2px; border-color: var(--ctx-border-focus); }
+  .select.open .select-field .floating, .select.filled .select-field .floating { display: block; }
+  .select.open .outline legend, .select.filled .outline legend { max-width: 100%; }
+  .select.filled .select-field .text { color: var(--ctx-on-surface-high); }
+  .select.open:not(.filled) .select-field .text { visibility: hidden; }
+  .select-list {
+    position: absolute; z-index: 10; left: 0; right: 0; top: calc(100% + var(--space-stack-assist));
+    margin: 0; padding: var(--space-inline-control) 0; list-style: none; display: none;
+    background: var(--ctx-surface-variant); border-radius: var(--brand-radius-control);
+    box-shadow: 0 4px 12px rgba(15, 18, 24, 0.32); /* elevation/2 */
+  }
+  .select.open .select-list { display: block; }
+  .select-list li {
+    display: flex; align-items: center; gap: var(--space-inline-control);
+    min-height: var(--size-control-height); padding: var(--space-inline-control) var(--space-inset-control);
+    font-size: var(--type-body-size); line-height: var(--type-body-line-height); color: var(--ctx-on-surface-high); cursor: pointer;
+  }
+  .select-list li .label { flex: 1; min-width: 0; }
+  .select-list li:hover, .select-list li.active { background: var(--ctx-surface); }
+  .select-list li .check { flex: none; width: var(--size-icon-md); height: var(--size-icon-md); color: var(--ctx-on-surface-highlight); display: none; }
+  .select-list li[aria-selected="true"] .check { display: block; }
+  /* Promo background (idea): a casino pattern (suits and chips) drawn in the context's own ink at low
+     opacity, so it always matches the surface tone of the context. Fades out behind the text. */
+  .promo { position: relative; overflow: hidden; isolation: isolate; }
+  .promo::before {
+    content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background: var(--ctx-on-surface-high); opacity: 0.12;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg font-family='Arial' font-size='34' text-anchor='middle'%3E%3Ctext x='22' y='40'%3E%E2%99%A0%3C/text%3E%3Ctext x='82' y='40'%3E%E2%99%A5%3C/text%3E%3Ctext x='52' y='100'%3E%E2%99%A6%3C/text%3E%3Ctext x='112' y='100'%3E%E2%99%A3%3C/text%3E%3C/g%3E%3Cg fill='none' stroke='black' stroke-width='3'%3E%3Ccircle cx='90' cy='75' r='11'/%3E%3Ccircle cx='90' cy='75' r='5'/%3E%3Ccircle cx='20' cy='80' r='11'/%3E%3Ccircle cx='20' cy='80' r='5'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 120px 120px repeat, linear-gradient(100deg, transparent 25%, #000 75%);
+    -webkit-mask-composite: source-in;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg font-family='Arial' font-size='34' text-anchor='middle'%3E%3Ctext x='22' y='40'%3E%E2%99%A0%3C/text%3E%3Ctext x='82' y='40'%3E%E2%99%A5%3C/text%3E%3Ctext x='52' y='100'%3E%E2%99%A6%3C/text%3E%3Ctext x='112' y='100'%3E%E2%99%A3%3C/text%3E%3C/g%3E%3Cg fill='none' stroke='black' stroke-width='3'%3E%3Ccircle cx='90' cy='75' r='11'/%3E%3Ccircle cx='90' cy='75' r='5'/%3E%3Ccircle cx='20' cy='80' r='11'/%3E%3Ccircle cx='20' cy='80' r='5'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 120px 120px repeat, linear-gradient(100deg, transparent 25%, #000 75%);
+            mask-composite: intersect;
+    transform: rotate(-12deg) scale(1.4);
+  }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <h1>Somebet tokens · demo</h1>
+    <div class="toggle" role="group" aria-label="Theme">Theme
+      <span class="seg">
+        <button type="button" data-theme-set="dark" aria-pressed="true">Dark</button>
+        <button type="button" data-theme-set="light" aria-pressed="false">Light</button>
+      </span>
+    </div>
+    <div class="toggle" role="group" aria-label="Container width">Container
+      <span class="seg">
+        <button type="button" data-width-set="narrow" aria-pressed="true">Narrow (375)</button>
+        <button type="button" data-width-set="wide" aria-pressed="false">Wide (1200)</button>
+      </span>
+    </div>
+    <div class="toggle" role="group" aria-label="Card context">Card
+      <span class="seg">
+        <button type="button" data-ctx-set="ctx-default" aria-pressed="false">Default</button>
+        <button type="button" data-ctx-set="ctx-alternate" aria-pressed="true">Alternate</button>
+        <button type="button" data-ctx-set="ctx-accent" aria-pressed="false">Accent</button>
+      </span>
+    </div>
+  </div>
+
+  <div class="stage-wrap">
+    <div class="stage" id="stage" data-width="narrow">
+      <div class="layout">
+        <div class="screen">
+          <header class="app-header ctx-header">
+            <span class="logo" id="logo" data-form="Compact" role="img" aria-label="Somebet">
+              <!-- Logo · Brand=Somebet, Form=Compact, Context=Default · verbatim Figma SVG export -->
+              <svg class="logo-compact" aria-hidden="true" width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="20" cy="20" r="20" fill="#E9A800"/>
+<path d="M34 20C34 19.4477 34.4477 19 35 19C35.5523 19 36 19.4477 36 20C36 24.2435 34.3141 28.3129 31.3135 31.3135C28.3129 34.3141 24.2435 36 20 36C19.4477 36 19 35.5523 19 35C19 34.4477 19.4477 34 20 34C23.713 34 27.2739 32.5249 29.8994 29.8994C32.5249 27.2739 34 23.713 34 20Z" fill="#F8F7F3"/>
+<path d="M4 20C4 15.7565 5.68594 11.6871 8.68652 8.68652C11.6871 5.68594 15.7565 4 20 4C20.5523 4 21 4.44772 21 5C21 5.55228 20.5523 6 20 6C16.287 6 12.7261 7.47508 10.1006 10.1006C7.47508 12.7261 6 16.287 6 20C6 20.5523 5.55228 21 5 21C4.44772 21 4 20.5523 4 20Z" fill="#0C1B3B"/>
+<path d="M20.2296 28.3968C19.2893 28.3968 18.36 28.2765 17.4416 28.036C16.5451 27.7955 15.7032 27.4565 14.916 27.0192C14.1507 26.56 13.4947 26.0352 12.948 25.4448L15.8016 22.5584C16.3264 23.1269 16.9496 23.5752 17.6712 23.9032C18.3928 24.2093 19.18 24.3624 20.0328 24.3624C20.6232 24.3624 21.0715 24.2749 21.3776 24.1C21.7056 23.9251 21.8696 23.6845 21.8696 23.3784C21.8696 22.9848 21.6728 22.6896 21.2792 22.4928C20.9075 22.2741 20.4264 22.0883 19.836 21.9352C19.2456 21.7603 18.6224 21.5744 17.9664 21.3776C17.3104 21.1808 16.6872 20.9075 16.0968 20.5576C15.5064 20.2077 15.0253 19.7267 14.6536 19.1144C14.2819 18.4803 14.096 17.6821 14.096 16.72C14.096 15.6923 14.3584 14.8067 14.8832 14.0632C15.408 13.2979 16.1515 12.6965 17.1136 12.2592C18.0757 11.8219 19.2019 11.6032 20.492 11.6032C21.8477 11.6032 23.0941 11.8437 24.2312 12.3248C25.3901 12.784 26.3304 13.4728 27.052 14.3912L24.1984 17.2776C23.6955 16.6872 23.1269 16.2717 22.4928 16.0312C21.8805 15.7907 21.2792 15.6704 20.6888 15.6704C20.1203 15.6704 19.6939 15.7579 19.4096 15.9328C19.1253 16.0859 18.9832 16.3155 18.9832 16.6216C18.9832 16.9496 19.1691 17.212 19.5408 17.4088C19.9125 17.6056 20.3936 17.7805 20.984 17.9336C21.5744 18.0867 22.1976 18.2725 22.8536 18.4912C23.5096 18.7099 24.1328 19.0051 24.7232 19.3768C25.3136 19.7485 25.7947 20.2515 26.1664 20.8856C26.5381 21.4979 26.724 22.3069 26.724 23.3128C26.724 24.8653 26.1336 26.1008 24.9528 27.0192C23.7939 27.9376 22.2195 28.3968 20.2296 28.3968Z" fill="#0C1B3B"/>
+</svg>
+              <!-- Logo · Brand=Somebet, Form=Horizontal, Context=Default · verbatim Figma SVG export -->
+              <svg class="logo-horizontal" aria-hidden="true" width="97" height="32" viewBox="0 0 97 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M5.328 24.6242C4.64 24.6242 3.96 24.5362 3.288 24.3602C2.632 24.1842 2.016 23.9362 1.44 23.6162C0.88 23.2802 0.4 22.8962 0 22.4642L2.088 20.3522C2.472 20.7682 2.928 21.0962 3.456 21.3362C3.984 21.5602 4.56 21.6722 5.184 21.6722C5.616 21.6722 5.944 21.6082 6.168 21.4802C6.408 21.3522 6.528 21.1762 6.528 20.9522C6.528 20.6642 6.384 20.4482 6.096 20.3042C5.824 20.1442 5.472 20.0082 5.04 19.8962C4.608 19.7682 4.152 19.6322 3.672 19.4882C3.192 19.3442 2.736 19.1442 2.304 18.8882C1.872 18.6322 1.52 18.2802 1.248 17.8322C0.976 17.3682 0.84 16.7842 0.84 16.0802C0.84 15.3282 1.032 14.6802 1.416 14.1362C1.8 13.5762 2.344 13.1362 3.048 12.8162C3.752 12.4962 4.576 12.3362 5.52 12.3362C6.512 12.3362 7.424 12.5122 8.256 12.8642C9.104 13.2002 9.792 13.7042 10.32 14.3762L8.232 16.4882C7.864 16.0562 7.448 15.7522 6.984 15.5762C6.536 15.4002 6.096 15.3122 5.664 15.3122C5.248 15.3122 4.936 15.3762 4.728 15.5042C4.52 15.6162 4.416 15.7842 4.416 16.0082C4.416 16.2482 4.552 16.4402 4.824 16.5842C5.096 16.7282 5.448 16.8562 5.88 16.9682C6.312 17.0802 6.768 17.2162 7.248 17.3762C7.728 17.5362 8.184 17.7522 8.616 18.0242C9.048 18.2962 9.4 18.6642 9.672 19.1282C9.944 19.5762 10.08 20.1682 10.08 20.9042C10.08 22.0402 9.648 22.9442 8.784 23.6162C7.936 24.2882 6.784 24.6242 5.328 24.6242Z" fill="#F8F7F3"/>
+<path d="M26.08 24.3362V12.6722H29.752V24.3362H26.08ZM33.544 24.3362V17.5202C33.544 16.9282 33.36 16.4722 32.992 16.1522C32.64 15.8162 32.2 15.6482 31.672 15.6482C31.304 15.6482 30.976 15.7282 30.688 15.8882C30.4 16.0322 30.168 16.2402 29.992 16.5122C29.832 16.7842 29.752 17.1202 29.752 17.5202L28.336 16.8962C28.336 15.9682 28.536 15.1762 28.936 14.5202C29.336 13.8482 29.88 13.3362 30.568 12.9842C31.256 12.6162 32.032 12.4322 32.896 12.4322C33.712 12.4322 34.44 12.6162 35.08 12.9842C35.736 13.3522 36.256 13.8642 36.64 14.5202C37.024 15.1762 37.216 15.9602 37.216 16.8722V24.3362H33.544ZM41.008 24.3362V17.5202C41.008 16.9282 40.824 16.4722 40.456 16.1522C40.104 15.8162 39.664 15.6482 39.136 15.6482C38.768 15.6482 38.44 15.7282 38.152 15.8882C37.864 16.0322 37.632 16.2402 37.456 16.5122C37.296 16.7842 37.216 17.1202 37.216 17.5202L35.104 17.2322C35.136 16.2402 35.368 15.3922 35.8 14.6882C36.248 13.9682 36.832 13.4162 37.552 13.0322C38.288 12.6322 39.112 12.4322 40.024 12.4322C40.92 12.4322 41.712 12.6242 42.4 13.0082C43.104 13.3762 43.656 13.9122 44.056 14.6162C44.472 15.3042 44.68 16.1362 44.68 17.1122V24.3362H41.008Z" fill="#F8F7F3"/>
+<path d="M52.7931 24.6002C51.5291 24.6002 50.4011 24.3442 49.4091 23.8322C48.4331 23.3042 47.6651 22.5762 47.1051 21.6482C46.5451 20.7202 46.2651 19.6722 46.2651 18.5042C46.2651 17.3362 46.5371 16.2962 47.0811 15.3842C47.6411 14.4562 48.3931 13.7282 49.3371 13.2002C50.2811 12.6722 51.3451 12.4082 52.5291 12.4082C53.6811 12.4082 54.6971 12.6562 55.5771 13.1522C56.4571 13.6482 57.1451 14.3362 57.6411 15.2162C58.1531 16.0962 58.4091 17.1042 58.4091 18.2402C58.4091 18.4482 58.3931 18.6722 58.3611 18.9122C58.3451 19.1362 58.3051 19.4002 58.2411 19.7042L48.1851 19.7282V17.2082L56.6811 17.1842L55.0971 18.2402C55.0811 17.5682 54.9771 17.0162 54.7851 16.5842C54.5931 16.1362 54.3051 15.8002 53.9211 15.5762C53.5531 15.3362 53.0971 15.2162 52.5531 15.2162C51.9771 15.2162 51.4731 15.3522 51.0411 15.6242C50.6251 15.8802 50.2971 16.2482 50.0571 16.7282C49.8331 17.2082 49.7211 17.7922 49.7211 18.4802C49.7211 19.1682 49.8411 19.7602 50.0811 20.2562C50.3371 20.7362 50.6891 21.1122 51.1371 21.3842C51.6011 21.6402 52.1451 21.7682 52.7691 21.7682C53.3451 21.7682 53.8651 21.6722 54.3291 21.4802C54.7931 21.2722 55.2011 20.9682 55.5531 20.5682L57.5691 22.5842C56.9931 23.2562 56.2971 23.7602 55.4811 24.0962C54.6651 24.4322 53.7691 24.6002 52.7931 24.6002Z" fill="#F8F7F3"/>
+<path d="M67.8 24.5762C67.016 24.5762 66.296 24.4162 65.64 24.0962C64.984 23.7602 64.448 23.3202 64.032 22.7762C63.616 22.2162 63.376 21.5922 63.312 20.9042V15.9842C63.376 15.2962 63.616 14.6882 64.032 14.1602C64.448 13.6162 64.984 13.1922 65.64 12.8882C66.296 12.5842 67.016 12.4322 67.8 12.4322C68.904 12.4322 69.88 12.6962 70.728 13.2242C71.592 13.7522 72.264 14.4722 72.744 15.3842C73.24 16.2962 73.488 17.3362 73.488 18.5042C73.488 19.6722 73.24 20.7122 72.744 21.6242C72.264 22.5362 71.592 23.2562 70.728 23.7842C69.88 24.3122 68.904 24.5762 67.8 24.5762ZM61.08 24.3362V6.91217H64.752V15.5282L64.152 18.3602L64.704 21.1922V24.3362H61.08ZM67.152 21.2642C67.664 21.2642 68.112 21.1442 68.496 20.9042C68.896 20.6642 69.208 20.3362 69.432 19.9202C69.656 19.5042 69.768 19.0322 69.768 18.5042C69.768 17.9602 69.656 17.4802 69.432 17.0642C69.208 16.6482 68.896 16.3282 68.496 16.1042C68.112 15.8642 67.664 15.7442 67.152 15.7442C66.64 15.7442 66.184 15.8642 65.784 16.1042C65.384 16.3282 65.072 16.6482 64.848 17.0642C64.64 17.4802 64.536 17.9602 64.536 18.5042C64.536 19.0482 64.648 19.5282 64.872 19.9442C65.096 20.3602 65.4 20.6882 65.784 20.9282C66.184 21.1522 66.64 21.2642 67.152 21.2642Z" fill="#E9A800"/>
+<path d="M81.1135 24.6002C79.8495 24.6002 78.7215 24.3442 77.7295 23.8322C76.7535 23.3042 75.9855 22.5762 75.4255 21.6482C74.8655 20.7202 74.5855 19.6722 74.5855 18.5042C74.5855 17.3362 74.8575 16.2962 75.4015 15.3842C75.9615 14.4562 76.7135 13.7282 77.6575 13.2002C78.6015 12.6722 79.6655 12.4082 80.8495 12.4082C82.0015 12.4082 83.0175 12.6562 83.8975 13.1522C84.7775 13.6482 85.4655 14.3362 85.9615 15.2162C86.4735 16.0962 86.7295 17.1042 86.7295 18.2402C86.7295 18.4482 86.7135 18.6722 86.6815 18.9122C86.6655 19.1362 86.6255 19.4002 86.5615 19.7042L76.5055 19.7282V17.2082L85.0015 17.1842L83.4175 18.2402C83.4015 17.5682 83.2975 17.0162 83.1055 16.5842C82.9135 16.1362 82.6255 15.8002 82.2415 15.5762C81.8735 15.3362 81.4175 15.2162 80.8735 15.2162C80.2975 15.2162 79.7935 15.3522 79.3615 15.6242C78.9455 15.8802 78.6175 16.2482 78.3775 16.7282C78.1535 17.2082 78.0415 17.7922 78.0415 18.4802C78.0415 19.1682 78.1615 19.7602 78.4015 20.2562C78.6575 20.7362 79.0095 21.1122 79.4575 21.3842C79.9215 21.6402 80.4655 21.7682 81.0895 21.7682C81.6655 21.7682 82.1855 21.6722 82.6495 21.4802C83.1135 21.2722 83.5215 20.9682 83.8735 20.5682L85.8895 22.5842C85.3135 23.2562 84.6175 23.7602 83.8015 24.0962C82.9855 24.4322 82.0895 24.6002 81.1135 24.6002Z" fill="#E9A800"/>
+<path d="M89.9001 24.3362V7.84817H93.5721V24.3362H89.9001ZM87.2601 15.7922V12.6722H96.2121V15.7922H87.2601Z" fill="#E9A800"/>
+<circle cx="18" cy="18.5" r="6.5" fill="#E9A800"/>
+<path d="M22.55 18.5C22.55 18.3205 22.6955 18.175 22.875 18.175C23.0545 18.175 23.2 18.3205 23.2 18.5C23.2 19.8791 22.6521 21.2017 21.6769 22.1769C20.7017 23.1521 19.3791 23.7 18 23.7C17.8205 23.7 17.675 23.5545 17.675 23.375C17.675 23.1955 17.8205 23.05 18 23.05C19.2067 23.05 20.364 22.5706 21.2173 21.7173C22.0706 20.864 22.55 19.7067 22.55 18.5Z" fill="#F8F7F3"/>
+<path d="M12.8 18.5C12.8 17.1209 13.3479 15.7983 14.3231 14.8231C15.2983 13.8479 16.6209 13.3 18 13.3C18.1795 13.3 18.325 13.4455 18.325 13.625C18.325 13.8045 18.1795 13.95 18 13.95C16.7933 13.95 15.636 14.4294 14.7827 15.2827C13.9294 16.136 13.45 17.2933 13.45 18.5C13.45 18.6795 13.3045 18.825 13.125 18.825C12.9455 18.825 12.8 18.6795 12.8 18.5Z" fill="#0C1B3B"/>
+</svg>
+            </span>
+            <button class="btn tertiary small" type="button">Log in</button>
+            <button class="btn small" type="button">Register</button>
+          </header>
+
+          <main class="body">
+            <section class="stack">
+              <div class="section-title">
+                <h2>Welcome back</h2>
+                <p>Log in to continue.</p>
+              </div>
+              <form class="card" id="login" novalidate>
+                <h3 class="card-title">Sign in to your account</h3>
+                <div class="fields">
+                  <div class="input" id="email-input">
+                    <div class="input-field">
+                      <fieldset class="outline" aria-hidden="true"><legend><span>Email</span></legend></fieldset>
+                      <label class="floating" for="email">Email</label>
+                      <input id="email" type="email" placeholder="Email" autocomplete="email" aria-describedby="email-msg">
+                      <svg class="validation" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11.75 2C9.82164 2 7.93657 2.57183 6.33319 3.64317C4.72982 4.71451 3.48013 6.23726 2.74218 8.01884C2.00422 9.80042 1.81114 11.7608 2.18735 13.6521C2.56355 15.5434 3.49215 17.2807 4.85571 18.6443C6.21928 20.0079 7.95656 20.9365 9.84787 21.3127C11.7392 21.6889 13.6996 21.4958 15.4812 20.7578C17.2627 20.0199 18.7855 18.7702 19.8568 17.1668C20.9282 15.5634 21.5 13.6784 21.5 11.75C21.4973 9.16498 20.4692 6.68661 18.6413 4.85872C16.8134 3.03084 14.335 2.00273 11.75 2ZM11.75 20C10.1183 20 8.52326 19.5161 7.16655 18.6096C5.80984 17.7031 4.75242 16.4146 4.128 14.9071C3.50358 13.3996 3.3402 11.7408 3.65853 10.1405C3.97685 8.54016 4.76259 7.07015 5.91637 5.91637C7.07016 4.76259 8.54017 3.97685 10.1405 3.65852C11.7409 3.34019 13.3997 3.50357 14.9071 4.12799C16.4146 4.75242 17.7031 5.80984 18.6096 7.16655C19.5161 8.52325 20 10.1183 20 11.75C19.9975 13.9373 19.1275 16.0343 17.5809 17.5809C16.0343 19.1275 13.9373 19.9975 11.75 20ZM11 12.5V7.25C11 7.05109 11.079 6.86032 11.2197 6.71967C11.3603 6.57902 11.5511 6.5 11.75 6.5C11.9489 6.5 12.1397 6.57902 12.2803 6.71967C12.421 6.86032 12.5 7.05109 12.5 7.25V12.5C12.5 12.6989 12.421 12.8897 12.2803 13.0303C12.1397 13.171 11.9489 13.25 11.75 13.25C11.5511 13.25 11.3603 13.171 11.2197 13.0303C11.079 12.8897 11 12.6989 11 12.5ZM12.875 15.875C12.875 16.0975 12.809 16.315 12.6854 16.5C12.5618 16.685 12.3861 16.8292 12.1805 16.9144C11.975 16.9995 11.7488 17.0218 11.5305 16.9784C11.3123 16.935 11.1118 16.8278 10.9545 16.6705C10.7972 16.5132 10.69 16.3127 10.6466 16.0945C10.6032 15.8762 10.6255 15.65 10.7106 15.4445C10.7958 15.2389 10.94 15.0632 11.125 14.9396C11.31 14.816 11.5275 14.75 11.75 14.75C12.0484 14.75 12.3345 14.8685 12.5455 15.0795C12.7565 15.2905 12.875 15.5766 12.875 15.875Z" fill="currentColor"/></svg>
+                    </div>
+                    <p class="assistive" id="email-msg"></p>
+                  </div>
+                  <div class="input" id="pw-input">
+                    <div class="input-field">
+                      <fieldset class="outline" aria-hidden="true"><legend><span>Password</span></legend></fieldset>
+                      <label class="floating" for="pw">Password</label>
+                      <input id="pw" type="password" placeholder="Password" autocomplete="current-password" aria-describedby="pw-msg">
+                      <button class="icon-btn" type="button" id="pw-toggle" aria-label="Show password" aria-pressed="false"><svg class="eye-on" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M23.4353 12.1962C23.4025 12.1222 22.6084 10.3606 20.8431 8.59531C18.4909 6.24312 15.52 5 12.25 5C8.97999 5 6.00905 6.24312 3.65687 8.59531C1.89155 10.3606 1.09374 12.125 1.06468 12.1962C1.02203 12.2922 1 12.396 1 12.5009C1 12.6059 1.02203 12.7097 1.06468 12.8056C1.09749 12.8797 1.89155 14.6403 3.65687 16.4056C6.00905 18.7569 8.97999 20 12.25 20C15.52 20 18.4909 18.7569 20.8431 16.4056C22.6084 14.6403 23.4025 12.8797 23.4353 12.8056C23.4779 12.7097 23.5 12.6059 23.5 12.5009C23.5 12.396 23.4779 12.2922 23.4353 12.1962ZM12.25 18.5C9.36437 18.5 6.84343 17.4509 4.75655 15.3828C3.90028 14.5313 3.17179 13.5603 2.59374 12.5C3.17164 11.4396 3.90014 10.4686 4.75655 9.61719C6.84343 7.54906 9.36437 6.5 12.25 6.5C15.1356 6.5 17.6566 7.54906 19.7434 9.61719C20.6014 10.4684 21.3315 11.4394 21.9109 12.5C21.235 13.7619 18.2903 18.5 12.25 18.5ZM12.25 8C11.36 8 10.4899 8.26392 9.74993 8.75839C9.0099 9.25285 8.43313 9.95566 8.09253 10.7779C7.75194 11.6002 7.66282 12.505 7.83646 13.3779C8.01009 14.2508 8.43867 15.0526 9.06801 15.682C9.69735 16.3113 10.4992 16.7399 11.3721 16.9135C12.245 17.0872 13.1498 16.9981 13.9721 16.6575C14.7943 16.3169 15.4971 15.7401 15.9916 15.0001C16.4861 14.26 16.75 13.39 16.75 12.5C16.7488 11.3069 16.2742 10.163 15.4306 9.31939C14.587 8.47575 13.4431 8.00124 12.25 8ZM12.25 15.5C11.6566 15.5 11.0766 15.3241 10.5833 14.9944C10.0899 14.6648 9.70542 14.1962 9.47835 13.6481C9.25129 13.0999 9.19188 12.4967 9.30764 11.9147C9.42339 11.3328 9.70911 10.7982 10.1287 10.3787C10.5482 9.95912 11.0828 9.6734 11.6647 9.55764C12.2467 9.44189 12.8499 9.5013 13.398 9.72836C13.9462 9.95542 14.4148 10.3399 14.7444 10.8333C15.074 11.3266 15.25 11.9067 15.25 12.5C15.25 13.2956 14.9339 14.0587 14.3713 14.6213C13.8087 15.1839 13.0456 15.5 12.25 15.5Z" fill="currentColor"/>
+</svg><svg class="eye-off" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M5.30499 3.25228C5.23913 3.17804 5.15918 3.1176 5.06979 3.07448C4.9804 3.03136 4.88334 3.00641 4.78423 3.00108C4.68513 2.99575 4.58595 3.01014 4.49245 3.04342C4.39895 3.0767 4.31298 3.12821 4.23953 3.19496C4.16608 3.26171 4.10661 3.34237 4.06457 3.43227C4.02252 3.52218 3.99874 3.61953 3.9946 3.71869C3.99045 3.81785 4.00603 3.91685 4.04043 4.00995C4.07483 4.10304 4.12737 4.18839 4.19499 4.26103L5.99874 6.24572C2.59374 8.33541 1.12937 11.5567 1.06468 11.7029C1.02203 11.7988 1 11.9026 1 12.0076C1 12.1126 1.02203 12.2164 1.06468 12.3123C1.09749 12.3863 1.89155 14.147 3.65687 15.9123C6.00905 18.2635 8.97999 19.5067 12.25 19.5067C13.9306 19.5162 15.5942 19.1702 17.1316 18.4913L19.1941 20.761C19.2599 20.8353 19.3399 20.8957 19.4293 20.9388C19.5186 20.9819 19.6157 21.0069 19.7148 21.0122C19.8139 21.0176 19.9131 21.0032 20.0066 20.9699C20.1001 20.9366 20.1861 20.8851 20.2595 20.8183C20.333 20.7516 20.3924 20.6709 20.4345 20.581C20.4765 20.4911 20.5003 20.3938 20.5044 20.2946C20.5086 20.1955 20.493 20.0965 20.4586 20.0034C20.4242 19.9103 20.3717 19.8249 20.3041 19.7523L5.30499 3.25228ZM9.74218 10.3623L13.6487 14.6607C13.0605 14.9702 12.386 15.0755 11.7314 14.9602C11.0768 14.8448 10.479 14.5153 10.0319 14.0234C9.58481 13.5315 9.31377 12.905 9.26134 12.2424C9.2089 11.5797 9.37803 10.9184 9.74218 10.3623ZM12.25 18.0067C9.36437 18.0067 6.84343 16.9576 4.75655 14.8895C3.89997 14.0382 3.17145 13.0671 2.59374 12.0067C3.03343 11.1826 4.43687 8.87634 7.0328 7.37728L8.7203 9.22884C8.06699 10.0656 7.73052 11.1063 7.77036 12.1671C7.81021 13.2279 8.22379 14.2405 8.93802 15.0259C9.65225 15.8112 10.6211 16.3188 11.6734 16.4589C12.7257 16.599 13.7936 16.3625 14.6884 15.7913L16.0694 17.3101C14.8506 17.7777 13.5553 18.0139 12.25 18.0067ZM12.8125 9.06009C12.6171 9.0228 12.4444 8.90939 12.3326 8.74483C12.2208 8.58027 12.1789 8.37802 12.2162 8.18259C12.2535 7.98716 12.3669 7.81455 12.5315 7.70273C12.6961 7.59091 12.8983 7.54905 13.0937 7.58634C14.0496 7.77166 14.92 8.26101 15.575 8.98142C16.23 9.70183 16.6346 10.6147 16.7284 11.5838C16.7469 11.7819 16.686 11.9792 16.5591 12.1323C16.4322 12.2854 16.2496 12.3819 16.0516 12.4004C16.0281 12.4018 16.0047 12.4018 15.9812 12.4004C15.7938 12.4012 15.6128 12.3318 15.474 12.2058C15.3352 12.0798 15.2486 11.9064 15.2312 11.7198C15.1681 11.0751 14.8986 10.4681 14.4628 9.98891C14.0271 9.50972 13.4482 9.18397 12.8125 9.06009ZM23.4325 12.3123C23.3931 12.4004 22.4434 14.5032 20.305 16.4185C20.2319 16.4861 20.1461 16.5384 20.0527 16.5724C19.9592 16.6065 19.8599 16.6216 19.7605 16.6169C19.6611 16.6122 19.5636 16.5878 19.4738 16.545C19.3839 16.5023 19.3035 16.4421 19.2371 16.368C19.1708 16.2938 19.1198 16.2072 19.0873 16.1132C19.0547 16.0192 19.0412 15.9196 19.0475 15.8203C19.0537 15.721 19.0797 15.624 19.1239 15.5348C19.168 15.4457 19.2295 15.3662 19.3047 15.301C20.3538 14.3585 21.2351 13.2445 21.9109 12.0067C21.3319 10.9452 20.6018 9.97348 19.7434 9.12197C17.6566 7.05572 15.1356 6.00665 12.25 6.00665C11.642 6.00591 11.0349 6.05514 10.435 6.15384C10.3374 6.1711 10.2374 6.16885 10.1407 6.14723C10.044 6.12561 9.95259 6.08505 9.87167 6.02788C9.79074 5.97072 9.72195 5.89809 9.66925 5.81419C9.61656 5.73029 9.58101 5.63678 9.56466 5.53906C9.54832 5.44134 9.55149 5.34135 9.57401 5.24487C9.59652 5.14838 9.63793 5.05731 9.69584 4.97692C9.75375 4.89653 9.82702 4.82842 9.9114 4.7765C9.99579 4.72459 10.0896 4.68991 10.1875 4.67447C10.8692 4.56191 11.559 4.50578 12.25 4.50665C15.52 4.50665 18.4909 5.74978 20.8431 8.10197C22.6084 9.86728 23.4025 11.6288 23.4353 11.7029C23.4779 11.7988 23.5 11.9026 23.5 12.0076C23.5 12.1126 23.4779 12.2164 23.4353 12.3123H23.4325Z" fill="currentColor"/>
+</svg></button>
+                      <svg class="validation" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11.75 2C9.82164 2 7.93657 2.57183 6.33319 3.64317C4.72982 4.71451 3.48013 6.23726 2.74218 8.01884C2.00422 9.80042 1.81114 11.7608 2.18735 13.6521C2.56355 15.5434 3.49215 17.2807 4.85571 18.6443C6.21928 20.0079 7.95656 20.9365 9.84787 21.3127C11.7392 21.6889 13.6996 21.4958 15.4812 20.7578C17.2627 20.0199 18.7855 18.7702 19.8568 17.1668C20.9282 15.5634 21.5 13.6784 21.5 11.75C21.4973 9.16498 20.4692 6.68661 18.6413 4.85872C16.8134 3.03084 14.335 2.00273 11.75 2ZM11.75 20C10.1183 20 8.52326 19.5161 7.16655 18.6096C5.80984 17.7031 4.75242 16.4146 4.128 14.9071C3.50358 13.3996 3.3402 11.7408 3.65853 10.1405C3.97685 8.54016 4.76259 7.07015 5.91637 5.91637C7.07016 4.76259 8.54017 3.97685 10.1405 3.65852C11.7409 3.34019 13.3997 3.50357 14.9071 4.12799C16.4146 4.75242 17.7031 5.80984 18.6096 7.16655C19.5161 8.52325 20 10.1183 20 11.75C19.9975 13.9373 19.1275 16.0343 17.5809 17.5809C16.0343 19.1275 13.9373 19.9975 11.75 20ZM11 12.5V7.25C11 7.05109 11.079 6.86032 11.2197 6.71967C11.3603 6.57902 11.5511 6.5 11.75 6.5C11.9489 6.5 12.1397 6.57902 12.2803 6.71967C12.421 6.86032 12.5 7.05109 12.5 7.25V12.5C12.5 12.6989 12.421 12.8897 12.2803 13.0303C12.1397 13.171 11.9489 13.25 11.75 13.25C11.5511 13.25 11.3603 13.171 11.2197 13.0303C11.079 12.8897 11 12.6989 11 12.5ZM12.875 15.875C12.875 16.0975 12.809 16.315 12.6854 16.5C12.5618 16.685 12.3861 16.8292 12.1805 16.9144C11.975 16.9995 11.7488 17.0218 11.5305 16.9784C11.3123 16.935 11.1118 16.8278 10.9545 16.6705C10.7972 16.5132 10.69 16.3127 10.6466 16.0945C10.6032 15.8762 10.6255 15.65 10.7106 15.4445C10.7958 15.2389 10.94 15.0632 11.125 14.9396C11.31 14.816 11.5275 14.75 11.75 14.75C12.0484 14.75 12.3345 14.8685 12.5455 15.0795C12.7565 15.2905 12.875 15.5766 12.875 15.875Z" fill="currentColor"/></svg>
+                    </div>
+                    <p class="assistive" id="pw-msg"></p>
+                  </div>
+                  <label class="checkbox"><input type="checkbox" name="remember"> Remember me</label>
+                </div>
+                <div class="actions">
+                  <button class="btn block" type="submit">Log in</button>
+                  <a class="link" href="#">Forgot your password?</a>
+                </div>
+              </form>
+            </section>
+
+            <section class="stack">
+              <div class="section-title"><h2>Buttons</h2><p>Primary, secondary and tertiary, regular size.</p></div>
+              <div class="row">
+                <button class="btn" type="button">Primary</button>
+                <button class="btn secondary" type="button">Secondary</button>
+                <button class="btn tertiary" type="button">Tertiary</button>
+              </div>
+              <div class="select" id="country">
+                <div class="select-box">
+                  <fieldset class="outline" aria-hidden="true"><legend><span>Country</span></legend></fieldset>
+                  <button class="select-field" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="country-list">
+                    <span class="floating">Country</span>
+                    <span class="text">Country</span>
+                    <svg class="caret" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.281 8.28104L12.781 15.781C12.7114 15.8508 12.6287 15.9061 12.5376 15.9438C12.4466 15.9816 12.349 16.001 12.2504 16.001C12.1519 16.001 12.0543 15.9816 11.9632 15.9438C11.8722 15.9061 11.7894 15.8508 11.7198 15.781L4.21979 8.28104C4.07906 8.14031 4 7.94944 4 7.75042C4 7.55139 4.07906 7.36052 4.21979 7.21979C4.36052 7.07906 4.55139 7 4.75042 7C4.94944 7 5.14031 7.07906 5.28104 7.21979L12.2504 14.1901L19.2198 7.21979C19.2895 7.15011 19.3722 7.09483 19.4632 7.05712C19.5543 7.01941 19.6519 7 19.7504 7C19.849 7 19.9465 7.01941 20.0376 7.05712C20.1286 7.09483 20.2114 7.15011 20.281 7.21979C20.3507 7.28947 20.406 7.3722 20.4437 7.46324C20.4814 7.55429 20.5008 7.65187 20.5008 7.75042C20.5008 7.84896 20.4814 7.94654 20.4437 8.03759C20.406 8.12863 20.3507 8.21136 20.281 8.28104Z" fill="currentColor"/></svg>
+                  </button>
+                </div>
+                <ul class="select-list" id="country-list" role="listbox" aria-label="Country" tabindex="-1"><li role="option" id="opt-0" aria-selected="false"><span class="label">Argentina</span><svg class="check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21.531 6.28104L9.53104 18.281C9.46139 18.3508 9.37867 18.4061 9.28762 18.4438C9.19657 18.4816 9.09898 18.501 9.00042 18.501C8.90186 18.501 8.80426 18.4816 8.71321 18.4438C8.62216 18.4061 8.53945 18.3508 8.46979 18.281L3.21979 13.031C3.07906 12.8903 3 12.6994 3 12.5004C3 12.3014 3.07906 12.1105 3.21979 11.9698C3.36052 11.8291 3.55139 11.75 3.75042 11.75C3.94944 11.75 4.14031 11.8291 4.28104 11.9698L9.00042 16.6901L20.4698 5.21979C20.6105 5.07906 20.8014 5 21.0004 5C21.1994 5 21.3903 5.07906 21.531 5.21979C21.6718 5.36052 21.7508 5.55139 21.7508 5.75042C21.7508 5.94944 21.6718 6.14031 21.531 6.28104Z" fill="currentColor"/></svg></li><li role="option" id="opt-1" aria-selected="false"><span class="label">Brazil</span><svg class="check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21.531 6.28104L9.53104 18.281C9.46139 18.3508 9.37867 18.4061 9.28762 18.4438C9.19657 18.4816 9.09898 18.501 9.00042 18.501C8.90186 18.501 8.80426 18.4816 8.71321 18.4438C8.62216 18.4061 8.53945 18.3508 8.46979 18.281L3.21979 13.031C3.07906 12.8903 3 12.6994 3 12.5004C3 12.3014 3.07906 12.1105 3.21979 11.9698C3.36052 11.8291 3.55139 11.75 3.75042 11.75C3.94944 11.75 4.14031 11.8291 4.28104 11.9698L9.00042 16.6901L20.4698 5.21979C20.6105 5.07906 20.8014 5 21.0004 5C21.1994 5 21.3903 5.07906 21.531 5.21979C21.6718 5.36052 21.7508 5.55139 21.7508 5.75042C21.7508 5.94944 21.6718 6.14031 21.531 6.28104Z" fill="currentColor"/></svg></li><li role="option" id="opt-2" aria-selected="false"><span class="label">Canada</span><svg class="check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21.531 6.28104L9.53104 18.281C9.46139 18.3508 9.37867 18.4061 9.28762 18.4438C9.19657 18.4816 9.09898 18.501 9.00042 18.501C8.90186 18.501 8.80426 18.4816 8.71321 18.4438C8.62216 18.4061 8.53945 18.3508 8.46979 18.281L3.21979 13.031C3.07906 12.8903 3 12.6994 3 12.5004C3 12.3014 3.07906 12.1105 3.21979 11.9698C3.36052 11.8291 3.55139 11.75 3.75042 11.75C3.94944 11.75 4.14031 11.8291 4.28104 11.9698L9.00042 16.6901L20.4698 5.21979C20.6105 5.07906 20.8014 5 21.0004 5C21.1994 5 21.3903 5.07906 21.531 5.21979C21.6718 5.36052 21.7508 5.55139 21.7508 5.75042C21.7508 5.94944 21.6718 6.14031 21.531 6.28104Z" fill="currentColor"/></svg></li></ul>
+              </div>
+
+              <aside class="promo ctx-alternate" id="promo">
+                <span class="caption">Welcome bonus</span>
+                <h3>Double your first deposit</h3>
+                <p>Up to <span class="highlight">R$ 500</span> in bonus for new players.</p>
+                <div class="row"><button class="btn" type="button">Claim bonus</button></div>
+              </aside>
+            </section>
+          </main>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  var root = document.documentElement, stage = document.getElementById('stage'), logo = document.getElementById('logo');
+  function press(attr, value) {
+    document.querySelectorAll('[' + attr + ']').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute(attr) === value)); });
+  }
+  document.querySelectorAll('[data-theme-set]').forEach(function (b) {
+    b.addEventListener('click', function () { var v = b.getAttribute('data-theme-set'); root.setAttribute('data-theme', v); press('data-theme-set', v); });
+  });
+  // Context switch: one class on the card re-resolves every --ctx-* token inside it
+  var promo = document.getElementById('promo');
+  document.querySelectorAll('[data-ctx-set]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var v = b.getAttribute('data-ctx-set');
+      promo.classList.remove('ctx-default', 'ctx-alternate', 'ctx-accent'); promo.classList.add(v);
+      press('data-ctx-set', v);
+    });
+  });
+  document.querySelectorAll('[data-width-set]').forEach(function (b) {
+    b.addEventListener('click', function () { var v = b.getAttribute('data-width-set'); stage.setAttribute('data-width', v); press('data-width-set', v); syncLogo(); });
+  });
+  // --logo-form (Layout token) is a string: Compact = coin mark, Horizontal = wordmark
+  function syncLogo() {
+    var f = getComputedStyle(logo).getPropertyValue('--logo-form').replace(/["'\s]/g, '');
+    logo.setAttribute('data-form', f || 'Compact');
+  }
+  new ResizeObserver(syncLogo).observe(stage);
+  syncLogo();
+</script>
+<script>
+  (function () {
+    var t = document.getElementById('pw-toggle'), pw = document.getElementById('pw');
+    t.addEventListener('click', function () {
+      var show = pw.type === 'password';
+      pw.type = show ? 'text' : 'password';
+      t.setAttribute('aria-pressed', String(show));
+      t.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    });
+  })();
+</script>
+<script>
+  (function () {
+    var sel = document.getElementById('country'), field = sel.querySelector('.select-field'),
+        text = field.querySelector('.text'), list = sel.querySelector('.select-list'),
+        opts = Array.prototype.slice.call(list.querySelectorAll('li')), active = -1;
+    function setActive(i) { opts.forEach(function (o, j) { o.classList.toggle('active', j === i); }); active = i; }
+    function open(v) { sel.classList.toggle('open', v); field.setAttribute('aria-expanded', String(v)); if (!v) setActive(-1); }
+    function choose(i) {
+      opts.forEach(function (o, j) { o.setAttribute('aria-selected', String(j === i)); });
+      text.textContent = opts[i].querySelector('.label').textContent;
+      sel.classList.add('filled'); open(false); field.focus();
+    }
+    field.addEventListener('click', function () { open(!sel.classList.contains('open')); });
+    opts.forEach(function (o, i) { o.addEventListener('click', function () { choose(i); }); });
+    field.addEventListener('keydown', function (e) {
+      var isOpen = sel.classList.contains('open');
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault(); if (!isOpen) open(true);
+        var n = active + (e.key === 'ArrowDown' ? 1 : -1); setActive(Math.max(0, Math.min(opts.length - 1, n)));
+      } else if ((e.key === 'Enter' || e.key === ' ') && isOpen && active > -1) { e.preventDefault(); choose(active); }
+      else if (e.key === 'Escape') open(false);
+    });
+    document.addEventListener('click', function (e) { if (!sel.contains(e.target)) open(false); });
+  })();
+</script>
+<script>
+  (function () {
+    var form = document.getElementById('login');
+    var fields = [
+      { box: document.getElementById('email-input'), input: document.getElementById('email'), msg: 'Email is a required field' },
+      { box: document.getElementById('pw-input'), input: document.getElementById('pw'), msg: 'Password is a required field' }
+    ];
+    function setError(f, on) {
+      var p = f.box.querySelector('.assistive');
+      f.box.classList.toggle('error', on); f.input.setAttribute('aria-invalid', String(on));
+      p.textContent = on ? f.msg : '';
+    }
+    fields.forEach(function (f) {
+      f.input.addEventListener('input', function () {
+        f.box.classList.toggle('filled', f.input.value !== '');
+        if (f.input.value !== '') setError(f, false);
+      });
+    });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var first = null;
+      fields.forEach(function (f) { var empty = f.input.value.trim() === ''; setError(f, empty); if (empty && !first) first = f.input; });
+      if (first) first.focus();
+    });
+  })();
+</script>
+</body>
+</html>

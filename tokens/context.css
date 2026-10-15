@@ -1,0 +1,227 @@
+/* Somebet design system · context tokens.
+   Generated from the Figma "Context" collection (5 modes), 2026-10-14.
+   Default, Alternate and Header reference theme tokens (load theme.css first).
+   Accent (gold) and Alternate accent (purple) are theme-independent strong surfaces,
+   so they reference brand tokens directly, and status colours on them are raw values.
+   Default applies on :root, on any [data-theme] element and on .ctx-default, so a
+   context is recomputed against the nearest theme. Add one class to any element to
+   switch the context for everything inside it:
+     .ctx-alternate  .ctx-accent  .ctx-alternate-accent  .ctx-header
+   Keep this file after theme.css: on an element that has both [data-theme] and a
+   .ctx-* class, the class must win by source order. */
+:root,
+[data-theme],
+.ctx-default {
+  --ctx-alert: var(--alert);
+  --ctx-border-default: var(--border-default);
+  --ctx-border-focus: var(--border-focus);
+  --ctx-border-strong: var(--border-strong);
+  --ctx-border-subtle: var(--border-subtle);
+  --ctx-error: var(--error);
+  --ctx-info: var(--info);
+  --ctx-logo-context: "Default";
+  --ctx-on-alert: var(--on-alert);
+  --ctx-on-error: var(--on-error);
+  --ctx-on-info: var(--on-info);
+  --ctx-on-primary: var(--on-primary);
+  --ctx-on-primary-disabled: var(--on-primary-disabled);
+  --ctx-on-secondary: var(--on-secondary);
+  --ctx-on-secondary-disabled: var(--on-secondary-disabled);
+  --ctx-on-success: var(--on-success);
+  --ctx-on-surface-high: var(--on-surface-high);
+  --ctx-on-surface-highlight: var(--on-surface-highlight);
+  --ctx-on-surface-low: var(--on-surface-low);
+  --ctx-on-surface-medium: var(--on-surface-medium);
+  --ctx-on-surface-selected: var(--on-surface-selected);
+  --ctx-on-surface-ultra-low: var(--on-surface-ultra-low);
+  --ctx-on-tertiary: var(--on-tertiary);
+  --ctx-on-tertiary-disabled: var(--on-tertiary-disabled);
+  --ctx-overlay: var(--overlay);
+  --ctx-primary: var(--primary);
+  --ctx-primary-disabled: var(--primary-disabled);
+  --ctx-primary-hover: var(--primary-hover);
+  --ctx-primary-pressed: var(--primary-pressed);
+  --ctx-secondary: var(--secondary);
+  --ctx-secondary-disabled: var(--secondary-disabled);
+  --ctx-secondary-hover: var(--secondary-hover);
+  --ctx-secondary-pressed: var(--secondary-pressed);
+  --ctx-success: var(--success);
+  --ctx-surface: var(--surface);
+  --ctx-surface-variant: var(--surface-variant);
+  --ctx-tertiary: var(--tertiary);
+  --ctx-tertiary-disabled: var(--tertiary-disabled);
+  --ctx-tertiary-hover: var(--tertiary-hover);
+  --ctx-tertiary-pressed: var(--tertiary-pressed);
+}
+
+.ctx-alternate {
+  --ctx-alert: var(--alert);
+  --ctx-border-default: var(--on-alternate-surface-low);
+  --ctx-border-focus: var(--on-alternate-surface-selected);
+  --ctx-border-strong: var(--on-alternate-surface-medium);
+  --ctx-border-subtle: var(--on-alternate-surface-ultra-low);
+  --ctx-error: var(--alternate-error);
+  --ctx-info: var(--info);
+  --ctx-logo-context: "Default";
+  --ctx-on-alert: var(--on-alert);
+  --ctx-on-error: var(--on-alternate-error);
+  --ctx-on-info: var(--on-info);
+  --ctx-on-primary: var(--on-primary);
+  --ctx-on-primary-disabled: var(--on-alternate-primary-disabled);
+  --ctx-on-secondary: var(--on-secondary);
+  --ctx-on-secondary-disabled: var(--on-alternate-secondary-disabled);
+  --ctx-on-success: var(--on-alternate-success);
+  --ctx-on-surface-high: var(--on-alternate-surface-high);
+  --ctx-on-surface-highlight: var(--on-alternate-surface-highlight);
+  --ctx-on-surface-low: var(--on-alternate-surface-low);
+  --ctx-on-surface-medium: var(--on-alternate-surface-medium);
+  --ctx-on-surface-selected: var(--on-alternate-surface-selected);
+  --ctx-on-surface-ultra-low: var(--on-alternate-surface-ultra-low);
+  --ctx-on-tertiary: var(--on-alternate-surface-high);
+  --ctx-on-tertiary-disabled: var(--on-alternate-surface-ultra-low);
+  --ctx-overlay: var(--overlay);
+  --ctx-primary: var(--primary);
+  --ctx-primary-disabled: var(--alternate-primary-disabled);
+  --ctx-primary-hover: var(--primary-hover);
+  --ctx-primary-pressed: var(--primary-pressed);
+  --ctx-secondary: var(--secondary);
+  --ctx-secondary-disabled: var(--alternate-secondary-disabled);
+  --ctx-secondary-hover: var(--secondary-hover);
+  --ctx-secondary-pressed: var(--secondary-pressed);
+  --ctx-success: var(--alternate-success);
+  --ctx-surface: var(--alternate-surface);
+  --ctx-surface-variant: var(--alternate-surface-variant);
+  --ctx-tertiary: var(--tertiary);
+  --ctx-tertiary-disabled: var(--tertiary-disabled);
+  --ctx-tertiary-hover: var(--alternate-tertiary-hover);
+  --ctx-tertiary-pressed: var(--alternate-tertiary-pressed);
+}
+
+.ctx-accent {
+  --ctx-alert: #783c07;
+  --ctx-border-default: var(--brand-secondary-700);
+  --ctx-border-focus: var(--brand-secondary-900);
+  --ctx-border-strong: var(--brand-secondary-800);
+  --ctx-border-subtle: var(--brand-primary-800);
+  --ctx-error: #7a191c;
+  --ctx-info: #153a7e;
+  --ctx-logo-context: "Accent";
+  --ctx-on-alert: #ffffff;
+  --ctx-on-error: #ffffff;
+  --ctx-on-info: #ffffff;
+  --ctx-on-primary: var(--brand-neutral-50);
+  --ctx-on-primary-disabled: var(--brand-primary-800);
+  --ctx-on-secondary: var(--brand-secondary-900);
+  --ctx-on-secondary-disabled: var(--brand-primary-800);
+  --ctx-on-success: #ffffff;
+  --ctx-on-surface-high: var(--brand-secondary-900);
+  --ctx-on-surface-highlight: var(--brand-featured-500);
+  --ctx-on-surface-low: var(--brand-secondary-700);
+  --ctx-on-surface-medium: var(--brand-secondary-800);
+  --ctx-on-surface-selected: var(--brand-featured-500);
+  --ctx-on-surface-ultra-low: var(--brand-primary-800);
+  --ctx-on-tertiary: var(--brand-secondary-900);
+  --ctx-on-tertiary-disabled: var(--brand-primary-800);
+  --ctx-overlay: var(--brand-overlay);
+  --ctx-primary: var(--brand-secondary-900);
+  --ctx-primary-disabled: var(--brand-primary-400);
+  --ctx-primary-hover: var(--brand-secondary-800);
+  --ctx-primary-pressed: var(--brand-secondary-700);
+  --ctx-secondary: var(--brand-neutral-0);
+  --ctx-secondary-disabled: var(--brand-primary-400);
+  --ctx-secondary-hover: var(--brand-neutral-100);
+  --ctx-secondary-pressed: var(--brand-neutral-200);
+  --ctx-success: #135032;
+  --ctx-surface: var(--brand-primary-500);
+  --ctx-surface-variant: var(--brand-primary-400);
+  --ctx-tertiary: #00000000;
+  --ctx-tertiary-disabled: #00000000;
+  --ctx-tertiary-hover: var(--brand-primary-300);
+  --ctx-tertiary-pressed: var(--brand-primary-200);
+}
+
+.ctx-alternate-accent {
+  --ctx-alert: #fcd0a8;
+  --ctx-border-default: var(--brand-neutral-200);
+  --ctx-border-focus: var(--brand-primary-300);
+  --ctx-border-strong: var(--brand-neutral-100);
+  --ctx-border-subtle: var(--brand-alt-accent-subtle);
+  --ctx-error: #fbb9b6;
+  --ctx-info: #aeccfa;
+  --ctx-logo-context: "Default";
+  --ctx-on-alert: var(--brand-secondary-900);
+  --ctx-on-error: var(--brand-secondary-900);
+  --ctx-on-info: var(--brand-secondary-900);
+  --ctx-on-primary: var(--brand-secondary-900);
+  --ctx-on-primary-disabled: var(--brand-alt-accent-subtle);
+  --ctx-on-secondary: var(--brand-secondary-900);
+  --ctx-on-secondary-disabled: var(--brand-alt-accent-subtle);
+  --ctx-on-success: var(--brand-secondary-900);
+  --ctx-on-surface-high: var(--brand-neutral-50);
+  --ctx-on-surface-highlight: var(--brand-primary-300);
+  --ctx-on-surface-low: var(--brand-neutral-200);
+  --ctx-on-surface-medium: var(--brand-neutral-100);
+  --ctx-on-surface-selected: var(--brand-primary-300);
+  --ctx-on-surface-ultra-low: var(--brand-alt-accent-subtle);
+  --ctx-on-tertiary: var(--brand-neutral-50);
+  --ctx-on-tertiary-disabled: var(--brand-alt-accent-subtle);
+  --ctx-overlay: var(--brand-overlay);
+  --ctx-primary: var(--brand-primary-500);
+  --ctx-primary-disabled: var(--brand-alt-accent-hover);
+  --ctx-primary-hover: var(--brand-primary-300);
+  --ctx-primary-pressed: var(--brand-primary-600);
+  --ctx-secondary: var(--brand-neutral-0);
+  --ctx-secondary-disabled: var(--brand-alt-accent-hover);
+  --ctx-secondary-hover: var(--brand-neutral-100);
+  --ctx-secondary-pressed: var(--brand-neutral-200);
+  --ctx-success: #b0dcc1;
+  --ctx-surface: var(--brand-alt-accent-surface);
+  --ctx-surface-variant: var(--brand-alt-accent-surface-raised);
+  --ctx-tertiary: #00000000;
+  --ctx-tertiary-disabled: #00000000;
+  --ctx-tertiary-hover: var(--brand-alt-accent-hover);
+  --ctx-tertiary-pressed: var(--brand-alt-accent-pressed);
+}
+
+.ctx-header {
+  --ctx-alert: var(--alert);
+  --ctx-border-default: var(--on-header-low);
+  --ctx-border-focus: var(--on-header-selected);
+  --ctx-border-strong: var(--on-header-medium);
+  --ctx-border-subtle: var(--on-header-ultra-low);
+  --ctx-error: var(--header-error);
+  --ctx-info: var(--info);
+  --ctx-logo-context: "Default";
+  --ctx-on-alert: var(--on-alert);
+  --ctx-on-error: var(--on-header-error);
+  --ctx-on-info: var(--on-info);
+  --ctx-on-primary: var(--on-primary);
+  --ctx-on-primary-disabled: var(--on-header-primary-disabled);
+  --ctx-on-secondary: var(--on-primary);
+  --ctx-on-secondary-disabled: var(--on-header-secondary-disabled);
+  --ctx-on-success: var(--on-header-success);
+  --ctx-on-surface-high: var(--on-header-high);
+  --ctx-on-surface-highlight: var(--on-header-highlight);
+  --ctx-on-surface-low: var(--on-header-low);
+  --ctx-on-surface-medium: var(--on-header-medium);
+  --ctx-on-surface-selected: var(--on-header-selected);
+  --ctx-on-surface-ultra-low: var(--on-header-ultra-low);
+  --ctx-on-tertiary: var(--on-header-high);
+  --ctx-on-tertiary-disabled: var(--on-header-ultra-low);
+  --ctx-overlay: var(--overlay);
+  --ctx-primary: var(--primary);
+  --ctx-primary-disabled: var(--header-primary-disabled);
+  --ctx-primary-hover: var(--primary-hover);
+  --ctx-primary-pressed: var(--primary-pressed);
+  --ctx-secondary: var(--on-header-high);
+  --ctx-secondary-disabled: var(--header-secondary-disabled);
+  --ctx-secondary-hover: var(--on-header-medium);
+  --ctx-secondary-pressed: var(--on-header-low);
+  --ctx-success: var(--header-success);
+  --ctx-surface: var(--header);
+  --ctx-surface-variant: var(--header);
+  --ctx-tertiary: var(--tertiary);
+  --ctx-tertiary-disabled: var(--tertiary-disabled);
+  --ctx-tertiary-hover: var(--secondary-hover);
+  --ctx-tertiary-pressed: var(--secondary-pressed);
+}
