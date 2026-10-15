@@ -2,7 +2,7 @@
 
 A themeable design system for the registration and login flow of a regulated betting product, built in Figma with native variables and exported to plain CSS custom properties. Somebet is a fictional brand.
 
-**[Live demo](https://istvanpukli.github.io/somebet-ds/)** · **[Case study](https://claude.ai/artifact/WogGfVUHxqcTFa2WTYctiM)**
+**[Live demo](https://istvanpukli.github.io/somebet-ds/demo/)** · **[Case study](https://istvanpukli.github.io/somebet-ds/)**
 
 ## What's here
 

@@ -3,11 +3,560 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Somebet design system</title>
-<meta http-equiv="refresh" content="0; url=demo/">
-<link rel="canonical" href="demo/">
+<title>Somebet design system · Case study · István Pukli</title>
+<meta name="description" content="How I rebuilt a betting product's registration and login UI as a themeable Figma library on native variables, proved it on real screens and exported it to working CSS.">
+<meta name="author" content="István Pukli">
+<link rel="canonical" href="https://istvanpukli.github.io/somebet-ds/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="One login form. Ten surfaces. Zero colour variants.">
+<meta property="og:description" content="How I rebuilt a betting product's registration and login UI as a themeable Figma library on native variables, proved it on real screens and exported it to working CSS.">
+<meta property="og:url" content="https://istvanpukli.github.io/somebet-ds/">
+<meta property="og:image" content="https://istvanpukli.github.io/somebet-ds/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@600&family=Barlow:wght@400;500;700&family=Outfit:wght@700&display=swap" rel="stylesheet">
+<style>
+/* Layout: a single reading column with wide breakout figures; the live token demo is the hero. */
+:root{
+  --paper:#EEF0F2; --paper-2:#E2E6EA; --card:#FFFFFF; --ink:#12161D; --ink-soft:#526070; --line:#CBD2DA;
+  --signal:#2D55C8; --signal-tint:#DCE4F8; --flag:#A8432A; --flag-tint:#F6E2DA; --pass:#1E7A52; --pass-tint:#DCEFE5;
+  --note:#7E5300; --note-tint:#FFF2D2;
+  --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body:"IBM Plex Sans", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1217; --paper-2:#171C23; --card:#1B2129; --ink:#E7EBF0; --ink-soft:#9BA6B4; --line:#2C3540;
+    --signal:#91AAFF; --signal-tint:#1E2A4A; --flag:#F0907A; --flag-tint:#3A2119; --pass:#62C394; --pass-tint:#17302A;
+    --note:#F0C766; --note-tint:#33290F; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1217; --paper-2:#171C23; --card:#1B2129; --ink:#E7EBF0; --ink-soft:#9BA6B4; --line:#2C3540;
+  --signal:#91AAFF; --signal-tint:#1E2A4A; --flag:#F0907A; --flag-tint:#3A2119; --pass:#62C394; --pass-tint:#17302A;
+  --note:#F0C766; --note-tint:#33290F; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+a{color:var(--signal)}
+:focus-visible{outline:2px solid var(--signal);outline-offset:3px;border-radius:3px}
+code,.mono{font-family:var(--mono);font-size:.86em}
+code{background:var(--paper-2);padding:.08em .35em;border-radius:4px;overflow-wrap:anywhere}
+
+.page{max-width:1120px;margin:0 auto;padding-inline:clamp(16px,5vw,56px)}
+.prose{max-width:66ch}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+
+/* Hero */
+.hero{padding-block:clamp(48px,8vw,104px) clamp(24px,4vw,40px)}
+.kicker{font-family:var(--mono);font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 22px}
+.hero h1{font-weight:700;font-size:clamp(2.4rem,6.6vw,5rem);line-height:1;letter-spacing:-.03em;max-width:15ch}
+.hero h1 em{font-style:normal;color:var(--signal)}
+.standfirst{font-size:clamp(1.12rem,1.9vw,1.32rem);line-height:1.5;max-width:52ch;margin:28px 0 0;color:var(--ink)}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px 28px;margin:40px 0 0;padding:22px 0 0;border-top:1px solid var(--line)}
+.facts dt{font-family:var(--mono);font-size:.74rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+.facts dd{margin:0;font-size:.97rem;line-height:1.45}
+@media (max-width:820px){.facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Demo */
+.demo{margin:clamp(32px,5vw,56px) 0 clamp(56px,9vw,104px);display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:0;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+@media (max-width:900px){.demo{grid-template-columns:1fr}}
+.controls{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:14px 28px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.ctl{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ctl-label{font-family:var(--mono);font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft)}
+.seg{display:flex;flex-wrap:wrap;gap:4px}
+.seg button{font:inherit;font-size:.86rem;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:5px 12px;cursor:pointer}
+.seg button:hover{border-color:var(--ink-soft)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.stage{background:var(--surface);transition:background .25s;min-width:0;display:flex;flex-direction:column;min-height:520px}
+.readout{border-left:1px solid var(--line);padding:18px 20px 22px;display:flex;flex-direction:column;gap:16px;min-width:0}
+@media (max-width:900px){.readout{border-left:0;border-top:1px solid var(--line)}}
+.readout h3{font-family:var(--mono);font-size:.74rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft)}
+.tok{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.tok li{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:10px;align-items:center;font-family:var(--mono);font-size:.76rem}
+.tok .sw{width:18px;height:18px;border-radius:4px;border:1px solid var(--line)}
+.tok .nm{overflow-wrap:anywhere}
+.tok .hx{color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.ratios{display:grid;gap:6px}
+.ratio{display:flex;justify-content:space-between;gap:10px;font-size:.86rem;border-top:1px solid var(--line);padding-top:6px}
+.ratio b{font-family:var(--mono);font-weight:500;font-variant-numeric:tabular-nums}
+.ratio .ok{color:var(--pass)}
+.readout p{margin:0;font-size:.82rem;color:var(--ink-soft);line-height:1.5}
+
+/* Somebet UI inside the demo, painted only from --ctx values set by script */
+.sb{font-family:"Barlow",Arial,sans-serif;color:var(--on-surface-high)}
+.sb-header{background:var(--surface);color:var(--on-surface-high);display:flex;align-items:center;justify-content:space-between;gap:12px;padding-inline:var(--inset);height:var(--header-h);transition:background .25s,height .2s}
+.logo-svg{display:block;height:32px;width:auto;max-width:100%}
+.logo-svg.c{height:40px}
+.lg-some{fill:var(--on-surface-high);transition:fill .25s}
+.hdr-actions{display:flex;gap:8px}
+.sb-btn{font-family:"Barlow",Arial,sans-serif;font-weight:500;font-size:14px;line-height:20px;border-radius:8px;border:1.5px solid transparent;padding:0 16px;height:40px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;white-space:nowrap;transition:background .15s}
+.b-primary{background:var(--primary);color:var(--on-primary)}
+.b-primary:hover{background:var(--primary-hover)}
+.b-primary:active{background:var(--primary-pressed)}
+.b-secondary{background:var(--secondary);color:var(--on-secondary)}
+.b-secondary:hover{background:var(--secondary-hover)}
+.b-tertiary{background:var(--tertiary);color:var(--on-tertiary)}
+.b-tertiary:hover{background:var(--tertiary-hover)}
+.sb-body{flex:1;display:flex;justify-content:center;align-items:flex-start;padding:var(--section) var(--inset)}
+.sb-card{width:100%;max-width:var(--form-w);background:var(--surface);color:var(--on-surface-high);border-radius:12px;padding:var(--inset-c);display:flex;flex-direction:column;gap:16px;transition:background .25s}
+.sb-card.raised{background:var(--surface-variant);box-shadow:0 10px 30px -12px rgba(5,10,25,.45)}
+.overline{font-weight:700;font-size:12px;line-height:16px;letter-spacing:.08em;text-transform:uppercase;color:var(--on-surface-highlight);margin:0}
+.sb-title{font-family:"Inter",sans-serif;font-weight:600;font-size:var(--hl);line-height:var(--hl-lh);margin:-8px 0 0;color:var(--on-surface-high)}
+/* Field: no fill; the border is a fieldset whose legend (an invisible copy of the label) cuts the notch */
+.field{display:flex;flex-direction:column;gap:4px}
+.field .fbox{position:relative}
+.field .box{height:48px;display:flex;align-items:center;padding:0 16px;font-size:14px;color:var(--on-surface-high)}
+.field .ol{position:absolute;inset:-7.5px 0 0 0;margin:0;min-width:0;padding:0 7px;border:1px solid var(--border-default);border-radius:8px;pointer-events:none;transition:border-color .25s}
+.field .ol legend{float:unset;width:auto;height:16px;padding:0;max-width:100%;overflow:hidden;visibility:hidden;white-space:nowrap;font-weight:500;font-size:12px;line-height:16px}
+.field .ol legend span{display:inline-block;padding:0 8px}
+.field .lbl{position:absolute;top:-8px;left:8px;padding:0 8px;font-weight:500;font-size:12px;line-height:16px;color:var(--on-surface-medium)}
+.field.err .ol{top:-7px;padding:0 6px;border-width:2px;border-color:var(--error)}
+.assist{min-height:16px;padding:0 16px;font-size:12px;line-height:16px;color:var(--error)}
+.sb-link{font-weight:700;font-size:14px;color:var(--on-surface-highlight);text-decoration:underline;text-underline-offset:3px;align-self:flex-start}
+.sb-actions{display:flex;flex-direction:column;gap:8px}
+.sb-actions .sb-btn{height:48px;width:100%;font-size:16px;line-height:24px}
+.sb-meta{font-size:12px;color:var(--on-surface-low);text-align:center}
+
+/* In short */
+.inshort{background:var(--paper-2);border-radius:16px;padding:clamp(22px,4vw,40px);margin:0 0 clamp(56px,9vw,104px)}
+.inshort h2{font-size:1.3rem;font-weight:600;margin:0 0 18px}
+.inshort ul{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px}
+.inshort li{border-top:2px solid var(--signal);padding-top:14px;font-size:.98rem}
+.inshort li b{display:block;font-family:var(--display);font-weight:600;font-size:1.08rem;margin-bottom:4px}
+@media (max-width:820px){.inshort ul{grid-template-columns:1fr;gap:20px}}
+
+/* Chapters */
+.chapter{margin:0 0 clamp(64px,10vw,120px)}
+.chapter h2{font-weight:600;font-size:clamp(1.8rem,3.6vw,2.6rem);line-height:1.1;letter-spacing:-.02em;margin:0 0 22px;max-width:22ch}
+.chapter h3{font-weight:600;font-size:1.25rem;margin:36px 0 10px}
+.chapter p{margin:0 0 18px}
+.lede-num{font-family:var(--mono);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--signal);margin:0 0 12px}
+.pull{font-family:var(--display);font-weight:600;font-size:clamp(1.3rem,2.4vw,1.7rem);line-height:1.3;letter-spacing:-.01em;border-left:3px solid var(--signal);padding:2px 0 2px 20px;margin:32px 0;max-width:34ch}
+ul.plain{padding-left:1.15em;margin:0 0 18px}
+ul.plain li{margin-bottom:8px}
+.aside{font-size:.92rem;color:var(--ink-soft);border-top:1px dashed var(--line);padding-top:12px;margin-top:24px;max-width:66ch}
+
+figure{margin:32px 0}
+figcaption{font-size:.88rem;color:var(--ink-soft);margin-top:12px;max-width:66ch}
+.scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+/* Tables */
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;vertical-align:top;padding:10px 14px 10px 0;border-bottom:1px solid var(--line)}
+th{font-family:var(--mono);font-size:.72rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;padding-right:0;padding-left:14px;white-space:nowrap}
+.tbl{min-width:620px}
+
+/* Alias chain diagram */
+.diagram{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:clamp(14px,3vw,28px)}
+.diagram svg{display:block;width:100%;min-width:680px;height:auto}
+.d-box{fill:var(--paper);stroke:var(--line);stroke-width:1.2}
+.d-key{fill:var(--signal-tint);stroke:var(--signal);stroke-width:1.4}
+.d-line{stroke:var(--ink-soft);stroke-width:1.3;fill:none}
+.d-t{font-family:var(--body);font-size:15px;font-weight:600;fill:var(--ink)}
+.d-s{font-family:var(--mono);font-size:11.5px;fill:var(--ink-soft)}
+.d-n{font-family:var(--mono);font-size:12px;fill:var(--signal)}
+.d-arrow{fill:var(--ink-soft)}
+
+/* Bars */
+.bars{display:grid;gap:10px}
+.bar{display:grid;grid-template-columns:minmax(120px,210px) minmax(0,1fr);gap:14px;align-items:center;font-size:.9rem}
+.bar .lab{line-height:1.3}
+.bar .lab small{display:block;color:var(--ink-soft);font-size:.78rem}
+.track{position:relative;height:24px}
+.fill{height:100%;border-radius:4px;background:var(--signal);min-width:2px}
+.fill.old{background:var(--ink-soft);opacity:.55}
+.fill.hot{background:var(--flag)}
+.track .v{position:absolute;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:.78rem;font-variant-numeric:tabular-nums;padding-left:8px;white-space:nowrap}
+@media (max-width:560px){.bar{grid-template-columns:1fr;gap:4px}}
+
+/* Phases */
+.phases{list-style:none;padding:0;margin:28px 0;counter-reset:p}
+.phases li{display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:18px 0;border-top:1px solid var(--line)}
+.phases li:last-child{border-bottom:1px solid var(--line)}
+.phases .n{font-family:var(--display);font-weight:700;font-size:2rem;line-height:1;color:var(--signal)}
+.phases h4{margin:0 0 4px;font-size:1.02rem;font-weight:600}
+.phases p{margin:0;font-size:.95rem}
+.phases .check{display:block;margin-top:6px;font-family:var(--mono);font-size:.78rem;color:var(--ink-soft)}
+
+/* Finding cards */
+.finds{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:28px 0}
+@media (max-width:760px){.finds{grid-template-columns:1fr}}
+.find{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;min-width:0}
+.find .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:999px;margin-bottom:10px}
+.tag.bug{background:var(--flag-tint);color:var(--flag)}
+.tag.fix{background:var(--pass-tint);color:var(--pass)}
+.tag.call{background:var(--signal-tint);color:var(--signal)}
+.find h4{margin:0 0 6px;font-size:1.02rem;font-weight:600}
+.find p{margin:0;font-size:.93rem}
+
+/* Big numbers */
+.compare{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:28px 0}
+@media (max-width:760px){.compare{grid-template-columns:1fr}}
+.stat{border-top:2px solid var(--ink);padding-top:12px}
+.stat b{display:block;font-family:var(--display);font-weight:700;font-size:clamp(2rem,4vw,2.8rem);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat span{display:block;font-size:.9rem;color:var(--ink-soft);margin-top:6px}
+
+.demo-more{margin:-32px 0 clamp(56px,9vw,96px);font-size:.95rem;color:var(--ink-soft);max-width:66ch}
+.demo-more a{color:var(--ink)}
+/* Figma renders (transparent PNG @2x) */
+.shot img{display:block;width:100%;height:auto}
+/* Screenshot slots and draft notes */
+.slot{border:1.5px dashed var(--line);border-radius:14px;background:repeating-linear-gradient(135deg,transparent 0 14px,color-mix(in srgb,var(--line) 35%,transparent) 14px 15px);min-height:220px;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
+.slot p{margin:0;font-size:.9rem;color:var(--ink-soft);max-width:46ch}
+.slot b{display:block;color:var(--ink);font-weight:600;margin-bottom:4px}
+.slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:760px){.slots{grid-template-columns:1fr}}
+.note{background:var(--note-tint);border:1px dashed var(--note);border-radius:10px;padding:14px 18px;margin:24px 0;font-size:.92rem;max-width:66ch}
+.note b{color:var(--note)}
+
+.take{list-style:none;padding:0;margin:0;display:grid;gap:22px}
+.take li{font-family:var(--display);font-weight:600;font-size:1.22rem;line-height:1.35;padding-left:20px;border-left:3px solid var(--signal)}
+.take li small{display:block;font-family:var(--body);font-weight:400;font-size:.95rem;color:var(--ink-soft);margin-top:6px;line-height:1.55}
+
+footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;color:var(--ink-soft);font-size:.92rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
 </head>
 <body>
-<p><a href="demo/">Open the Somebet tokens demo</a></p>
+<div class="page">
+
+<header class="hero">
+  <p class="kicker">Case study · Design system build · October 2026</p>
+  <h1>One login form. Ten surfaces. <em>Zero colour variants.</em></h1>
+  <p class="standfirst">I rebuilt the registration and login UI of a regulated betting product as a themeable Figma library on native variables, proved it on six real screens and exported it to working CSS. I designed the system; Claude Code did the building, in reviewed phases.</p>
+  <dl class="facts">
+    <div><dt>Role</dt><dd>System designer and reviewer, directing AI builds</dd></div>
+    <div><dt>Output</dt><dd>5 collections, 350 variables, 19 components, 6 proof screens</dd></div>
+    <div><dt>Time</dt><dd>About 12 hours to build over 4 days, plus about 7 hours of review and fixes</dd></div>
+    <div><dt>Compute</dt><dd>Build: about $37 at list price, 20% of one week's Pro allowance. Review: up to 32% more</dd></div>
+  </dl>
+</header>
+
+<section class="demo" aria-label="Live demo of the Somebet token architecture">
+  <div class="controls">
+    <div class="ctl"><span class="ctl-label" id="l-theme">Page theme</span><div class="seg" role="group" aria-labelledby="l-theme" data-key="theme"><button type="button" data-v="Dark" aria-pressed="true">Dark</button><button type="button" data-v="Light" aria-pressed="false">Light</button></div></div>
+    <div class="ctl"><span class="ctl-label" id="l-ctx">Card context</span><div class="seg" role="group" aria-labelledby="l-ctx" data-key="ctx"><button type="button" data-v="Default" aria-pressed="true">Default</button><button type="button" data-v="Alternate" aria-pressed="false">Alternate</button><button type="button" data-v="Accent" aria-pressed="false">Accent</button></div></div>
+    <div class="ctl"><span class="ctl-label" id="l-lay">Container</span><div class="seg" role="group" aria-labelledby="l-lay" data-key="lay"><button type="button" data-v="Compact" aria-pressed="true">Compact</button><button type="button" data-v="Expanded" aria-pressed="false">Expanded</button></div></div>
+  </div>
+  <div class="stage sb" id="stage">
+    <div class="sb-header" id="hdr">
+      <div id="logo-slot"></div>
+      <template id="tpl-logo-h"><svg class="logo-svg" width="97" height="32" viewBox="0 0 97 32" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Somebet"><path class="lg-some" d="M5.328 24.6242C4.64 24.6242 3.96 24.5362 3.288 24.3602C2.632 24.1842 2.016 23.9362 1.44 23.6162C0.88 23.2802 0.4 22.8962 0 22.4642L2.088 20.3522C2.472 20.7682 2.928 21.0962 3.456 21.3362C3.984 21.5602 4.56 21.6722 5.184 21.6722C5.616 21.6722 5.944 21.6082 6.168 21.4802C6.408 21.3522 6.528 21.1762 6.528 20.9522C6.528 20.6642 6.384 20.4482 6.096 20.3042C5.824 20.1442 5.472 20.0082 5.04 19.8962C4.608 19.7682 4.152 19.6322 3.672 19.4882C3.192 19.3442 2.736 19.1442 2.304 18.8882C1.872 18.6322 1.52 18.2802 1.248 17.8322C0.976 17.3682 0.84 16.7842 0.84 16.0802C0.84 15.3282 1.032 14.6802 1.416 14.1362C1.8 13.5762 2.344 13.1362 3.048 12.8162C3.752 12.4962 4.576 12.3362 5.52 12.3362C6.512 12.3362 7.424 12.5122 8.256 12.8642C9.104 13.2002 9.792 13.7042 10.32 14.3762L8.232 16.4882C7.864 16.0562 7.448 15.7522 6.984 15.5762C6.536 15.4002 6.096 15.3122 5.664 15.3122C5.248 15.3122 4.936 15.3762 4.728 15.5042C4.52 15.6162 4.416 15.7842 4.416 16.0082C4.416 16.2482 4.552 16.4402 4.824 16.5842C5.096 16.7282 5.448 16.8562 5.88 16.9682C6.312 17.0802 6.768 17.2162 7.248 17.3762C7.728 17.5362 8.184 17.7522 8.616 18.0242C9.048 18.2962 9.4 18.6642 9.672 19.1282C9.944 19.5762 10.08 20.1682 10.08 20.9042C10.08 22.0402 9.648 22.9442 8.784 23.6162C7.936 24.2882 6.784 24.6242 5.328 24.6242Z"/><path class="lg-some" d="M26.08 24.3362V12.6722H29.752V24.3362H26.08ZM33.544 24.3362V17.5202C33.544 16.9282 33.36 16.4722 32.992 16.1522C32.64 15.8162 32.2 15.6482 31.672 15.6482C31.304 15.6482 30.976 15.7282 30.688 15.8882C30.4 16.0322 30.168 16.2402 29.992 16.5122C29.832 16.7842 29.752 17.1202 29.752 17.5202L28.336 16.8962C28.336 15.9682 28.536 15.1762 28.936 14.5202C29.336 13.8482 29.88 13.3362 30.568 12.9842C31.256 12.6162 32.032 12.4322 32.896 12.4322C33.712 12.4322 34.44 12.6162 35.08 12.9842C35.736 13.3522 36.256 13.8642 36.64 14.5202C37.024 15.1762 37.216 15.9602 37.216 16.8722V24.3362H33.544ZM41.008 24.3362V17.5202C41.008 16.9282 40.824 16.4722 40.456 16.1522C40.104 15.8162 39.664 15.6482 39.136 15.6482C38.768 15.6482 38.44 15.7282 38.152 15.8882C37.864 16.0322 37.632 16.2402 37.456 16.5122C37.296 16.7842 37.216 17.1202 37.216 17.5202L35.104 17.2322C35.136 16.2402 35.368 15.3922 35.8 14.6882C36.248 13.9682 36.832 13.4162 37.552 13.0322C38.288 12.6322 39.112 12.4322 40.024 12.4322C40.92 12.4322 41.712 12.6242 42.4 13.0082C43.104 13.3762 43.656 13.9122 44.056 14.6162C44.472 15.3042 44.68 16.1362 44.68 17.1122V24.3362H41.008Z"/><path class="lg-some" d="M52.7931 24.6002C51.5291 24.6002 50.4011 24.3442 49.4091 23.8322C48.4331 23.3042 47.6651 22.5762 47.1051 21.6482C46.5451 20.7202 46.2651 19.6722 46.2651 18.5042C46.2651 17.3362 46.5371 16.2962 47.0811 15.3842C47.6411 14.4562 48.3931 13.7282 49.3371 13.2002C50.2811 12.6722 51.3451 12.4082 52.5291 12.4082C53.6811 12.4082 54.6971 12.6562 55.5771 13.1522C56.4571 13.6482 57.1451 14.3362 57.6411 15.2162C58.1531 16.0962 58.4091 17.1042 58.4091 18.2402C58.4091 18.4482 58.3931 18.6722 58.3611 18.9122C58.3451 19.1362 58.3051 19.4002 58.2411 19.7042L48.1851 19.7282V17.2082L56.6811 17.1842L55.0971 18.2402C55.0811 17.5682 54.9771 17.0162 54.7851 16.5842C54.5931 16.1362 54.3051 15.8002 53.9211 15.5762C53.5531 15.3362 53.0971 15.2162 52.5531 15.2162C51.9771 15.2162 51.4731 15.3522 51.0411 15.6242C50.6251 15.8802 50.2971 16.2482 50.0571 16.7282C49.8331 17.2082 49.7211 17.7922 49.7211 18.4802C49.7211 19.1682 49.8411 19.7602 50.0811 20.2562C50.3371 20.7362 50.6891 21.1122 51.1371 21.3842C51.6011 21.6402 52.1451 21.7682 52.7691 21.7682C53.3451 21.7682 53.8651 21.6722 54.3291 21.4802C54.7931 21.2722 55.2011 20.9682 55.5531 20.5682L57.5691 22.5842C56.9931 23.2562 56.2971 23.7602 55.4811 24.0962C54.6651 24.4322 53.7691 24.6002 52.7931 24.6002Z"/><path d="M67.8 24.5762C67.016 24.5762 66.296 24.4162 65.64 24.0962C64.984 23.7602 64.448 23.3202 64.032 22.7762C63.616 22.2162 63.376 21.5922 63.312 20.9042V15.9842C63.376 15.2962 63.616 14.6882 64.032 14.1602C64.448 13.6162 64.984 13.1922 65.64 12.8882C66.296 12.5842 67.016 12.4322 67.8 12.4322C68.904 12.4322 69.88 12.6962 70.728 13.2242C71.592 13.7522 72.264 14.4722 72.744 15.3842C73.24 16.2962 73.488 17.3362 73.488 18.5042C73.488 19.6722 73.24 20.7122 72.744 21.6242C72.264 22.5362 71.592 23.2562 70.728 23.7842C69.88 24.3122 68.904 24.5762 67.8 24.5762ZM61.08 24.3362V6.91217H64.752V15.5282L64.152 18.3602L64.704 21.1922V24.3362H61.08ZM67.152 21.2642C67.664 21.2642 68.112 21.1442 68.496 20.9042C68.896 20.6642 69.208 20.3362 69.432 19.9202C69.656 19.5042 69.768 19.0322 69.768 18.5042C69.768 17.9602 69.656 17.4802 69.432 17.0642C69.208 16.6482 68.896 16.3282 68.496 16.1042C68.112 15.8642 67.664 15.7442 67.152 15.7442C66.64 15.7442 66.184 15.8642 65.784 16.1042C65.384 16.3282 65.072 16.6482 64.848 17.0642C64.64 17.4802 64.536 17.9602 64.536 18.5042C64.536 19.0482 64.648 19.5282 64.872 19.9442C65.096 20.3602 65.4 20.6882 65.784 20.9282C66.184 21.1522 66.64 21.2642 67.152 21.2642Z" fill="#E9A800"/><path d="M81.1134 24.6002C79.8494 24.6002 78.7214 24.3442 77.7294 23.8322C76.7534 23.3042 75.9854 22.5762 75.4254 21.6482C74.8654 20.7202 74.5854 19.6722 74.5854 18.5042C74.5854 17.3362 74.8574 16.2962 75.4014 15.3842C75.9614 14.4562 76.7134 13.7282 77.6574 13.2002C78.6014 12.6722 79.6654 12.4082 80.8494 12.4082C82.0014 12.4082 83.0174 12.6562 83.8974 13.1522C84.7774 13.6482 85.4654 14.3362 85.9614 15.2162C86.4734 16.0962 86.7294 17.1042 86.7294 18.2402C86.7294 18.4482 86.7134 18.6722 86.6814 18.9122C86.6654 19.1362 86.6254 19.4002 86.5614 19.7042L76.5054 19.7282V17.2082L85.0014 17.1842L83.4174 18.2402C83.4014 17.5682 83.2974 17.0162 83.1054 16.5842C82.9134 16.1362 82.6254 15.8002 82.2414 15.5762C81.8734 15.3362 81.4174 15.2162 80.8734 15.2162C80.2974 15.2162 79.7934 15.3522 79.3614 15.6242C78.9454 15.8802 78.6174 16.2482 78.3774 16.7282C78.1534 17.2082 78.0414 17.7922 78.0414 18.4802C78.0414 19.1682 78.1614 19.7602 78.4014 20.2562C78.6574 20.7362 79.0094 21.1122 79.4574 21.3842C79.9214 21.6402 80.4654 21.7682 81.0894 21.7682C81.6654 21.7682 82.1854 21.6722 82.6494 21.4802C83.1134 21.2722 83.5214 20.9682 83.8734 20.5682L85.8894 22.5842C85.3134 23.2562 84.6174 23.7602 83.8014 24.0962C82.9854 24.4322 82.0894 24.6002 81.1134 24.6002Z" fill="#E9A800"/><path d="M89.9001 24.3362V7.84817H93.5721V24.3362H89.9001ZM87.2601 15.7922V12.6722H96.2121V15.7922H87.2601Z" fill="#E9A800"/><circle cx="18" cy="18.5" r="6.5" fill="#E9A800"/><path d="M22.55 18.5C22.55 18.3205 22.6955 18.175 22.875 18.175C23.0545 18.175 23.2 18.3205 23.2 18.5C23.2 19.8791 22.6521 21.2017 21.6769 22.1769C20.7017 23.1521 19.3791 23.7 18 23.7C17.8205 23.7 17.675 23.5545 17.675 23.375C17.675 23.1955 17.8205 23.05 18 23.05C19.2067 23.05 20.364 22.5706 21.2173 21.7173C22.0706 20.864 22.55 19.7067 22.55 18.5Z" fill="#F8F7F3"/><path d="M12.8 18.5C12.8 17.1209 13.3479 15.7983 14.3231 14.8231C15.2983 13.8479 16.6209 13.3 18 13.3C18.1795 13.3 18.325 13.4455 18.325 13.625C18.325 13.8045 18.1795 13.95 18 13.95C16.7933 13.95 15.636 14.4294 14.7827 15.2827C13.9294 16.136 13.45 17.2933 13.45 18.5C13.45 18.6795 13.3045 18.825 13.125 18.825C12.9455 18.825 12.8 18.6795 12.8 18.5Z" fill="#0C1B3B"/></svg></template>
+      <template id="tpl-logo-c"><svg class="logo-svg c" width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Somebet"><circle cx="20" cy="20" r="20" fill="#E9A800"/><path d="M34 20C34 19.4477 34.4477 19 35 19C35.5523 19 36 19.4477 36 20C36 24.2435 34.3141 28.3129 31.3135 31.3135C28.3129 34.3141 24.2435 36 20 36C19.4477 36 19 35.5523 19 35C19 34.4477 19.4477 34 20 34C23.713 34 27.2739 32.5249 29.8994 29.8994C32.5249 27.2739 34 23.713 34 20Z" fill="#F8F7F3"/><path d="M4 20C4 15.7565 5.68594 11.6871 8.68652 8.68652C11.6871 5.68594 15.7565 4 20 4C20.5523 4 21 4.44772 21 5C21 5.55228 20.5523 6 20 6C16.287 6 12.7261 7.47508 10.1006 10.1006C7.47508 12.7261 6 16.287 6 20C6 20.5523 5.55228 21 5 21C4.44772 21 4 20.5523 4 20Z" fill="#0C1B3B"/><path d="M20.2296 28.3968C19.2893 28.3968 18.36 28.2765 17.4416 28.036C16.5451 27.7955 15.7032 27.4565 14.916 27.0192C14.1507 26.56 13.4947 26.0352 12.948 25.4448L15.8016 22.5584C16.3264 23.1269 16.9496 23.5752 17.6712 23.9032C18.3928 24.2093 19.18 24.3624 20.0328 24.3624C20.6232 24.3624 21.0715 24.2749 21.3776 24.1C21.7056 23.9251 21.8696 23.6845 21.8696 23.3784C21.8696 22.9848 21.6728 22.6896 21.2792 22.4928C20.9075 22.2741 20.4264 22.0883 19.836 21.9352C19.2456 21.7603 18.6224 21.5744 17.9664 21.3776C17.3104 21.1808 16.6872 20.9075 16.0968 20.5576C15.5064 20.2077 15.0253 19.7267 14.6536 19.1144C14.2819 18.4803 14.096 17.6821 14.096 16.72C14.096 15.6923 14.3584 14.8067 14.8832 14.0632C15.408 13.2979 16.1515 12.6965 17.1136 12.2592C18.0757 11.8219 19.2019 11.6032 20.492 11.6032C21.8477 11.6032 23.0941 11.8437 24.2312 12.3248C25.3901 12.784 26.3304 13.4728 27.052 14.3912L24.1984 17.2776C23.6955 16.6872 23.1269 16.2717 22.4928 16.0312C21.8805 15.7907 21.2792 15.6704 20.6888 15.6704C20.1203 15.6704 19.6939 15.7579 19.4096 15.9328C19.1253 16.0859 18.9832 16.3155 18.9832 16.6216C18.9832 16.9496 19.1691 17.212 19.5408 17.4088C19.9125 17.6056 20.3936 17.7805 20.984 17.9336C21.5744 18.0867 22.1976 18.2725 22.8536 18.4912C23.5096 18.7099 24.1328 19.0051 24.7232 19.3768C25.3136 19.7485 25.7947 20.2515 26.1664 20.8856C26.5381 21.4979 26.724 22.3069 26.724 23.3128C26.724 24.8653 26.1336 26.1008 24.9528 27.0192C23.7939 27.9376 22.2195 28.3968 20.2296 28.3968Z" fill="#0C1B3B"/></svg></template>
+      <div class="hdr-actions"><button type="button" class="sb-btn b-secondary">Log in</button><button type="button" class="sb-btn b-primary">Register</button></div>
+    </div>
+    <div class="sb-body">
+      <div class="sb-card" id="card">
+        <p class="overline">Log in</p>
+        <h3 class="sb-title">Welcome back</h3>
+        <div class="field"><div class="fbox"><fieldset class="ol" aria-hidden="true"><legend><span>Email</span></legend></fieldset><div class="box">ana.souza@email.com</div><span class="lbl">Email</span></div><div class="assist"></div></div>
+        <div class="field err"><div class="fbox"><fieldset class="ol" aria-hidden="true"><legend><span>Password</span></legend></fieldset><div class="box">••••••••</div><span class="lbl">Password</span></div><div class="assist">That password doesn't match this account.</div></div>
+        <a class="sb-link" href="#c3" id="forgot">Forgot password?</a>
+        <div class="sb-actions"><button type="button" class="sb-btn b-primary">Log in</button><button type="button" class="sb-btn b-tertiary">Create an account</button></div>
+        <div class="sb-meta">* Required field</div>
+      </div>
+    </div>
+  </div>
+  <aside class="readout" aria-live="polite">
+    <h3>What the card resolves to</h3>
+    <ul class="tok" id="toks"></ul>
+    <h3>Contrast on this surface</h3>
+    <div class="ratios" id="ratios"></div>
+    <p>Every colour here is the value the Figma file resolves for this theme and context. Here the header is set to the Header context, so it stays navy on a light page. The components themselves have no colour or context variants.</p>
+  </aside>
+</section>
+<p class="demo-more">This card is a quick preview. The <a href="demo/">full demo page</a> has a working login form with validation, a select, all three button types and a card that switches context; its <a href="https://github.com/istvanpukli/somebet-ds">source and tokens are on GitHub</a>.</p>
+
+<section class="inshort" aria-labelledby="short">
+  <h2 id="short">In short</h2>
+  <ul>
+    <li><b>Context lives on the container</b>A header, card or modal sets its surface as a variable mode. Components read one generic set of names and adapt, so the old Context and Colour variant axes disappear.</li>
+    <li><b>A new brand costs about 80 values</b>Brand, Theme, Context and Layout chain by alias. A brand sets its 45 Brand roles and its colour ramps; dark, light and all five contexts come with it.</li>
+    <li><b>Every phase ended with a check</b>Each build had acceptance criteria I verified before the next started. The proof screens still caught a binding bug the checks missed, and that changed how I test.</li>
+  </ul>
+</section>
+
+<section class="chapter" aria-labelledby="c1">
+  <div class="prose">
+    <p class="lede-num">The starting point</p>
+    <h2 id="c1">Three generations of library in one sign-up flow</h2>
+    <p>The source was the Brazil registration and login work I designed at my previous employer: a compliance-heavy flow with identity data, address lookup and consent, live in a newly regulated market. Those screens drew on 68 distinct components and four typefaces. The library behind them was no longer available to me, so I set out to rebuild a clean version I could own, review and reuse.</p>
+    <p>One boundary came first. The original system's architecture could inform the design, but no token values, files or JSON were copied. The new system ships one fictional brand, Somebet, with its own palette, type and logo.</p>
+    <p>The audit covered the registration component set, the login section and the desktop examples. These were the findings that shaped the build:</p>
+  </div>
+  <figure class="scroll-x">
+    <table class="tbl">
+      <thead><tr><th>Finding</th><th>Evidence in the source file</th><th>Response in v1</th></tr></thead>
+      <tbody>
+        <tr><td>Context baked into variants</td><td>Button Colour / Context with 5 values, Modal Colour, Modal Header Context</td><td>Context becomes a variable mode set on the container</td></tr>
+        <tr><td>Button layering and versioning</td><td>The base button has 7 axes and 720 combinations and is named after its revision; layout presets wrap it with another 240</td><td>Base Button (45 variants) plus Button group (20); versions go in a changelog</td></tr>
+        <tr><td>Duplicated input</td><td>Two versions of the final input; one has a typo option (Suffix = On / Off / Of)</td><td>One Input with an instance-swap trailing slot</td></tr>
+        <tr><td>Typeface drift</td><td>Open Sans, Lato, Museo Sans and Roboto in one flow; one paragraph style resolves to two fonts</td><td>Two families per brand, bound to variables</td></tr>
+        <tr><td>Token naming</td><td>Four naming schemes, two of them holding the same value</td><td>One scheme: <code>group/role/variant</code></td></tr>
+        <tr><td>Collapsed text hierarchy</td><td>High, medium and low emphasis all resolve to black; borders have no tokens</td><td>Four emphasis levels shared by text, icons and borders</td></tr>
+        <tr><td>Brand duplication</td><td>22 brand token sets of about 350 tokens each, only 5–7% aliases</td><td>Brands as modes; everything above Primitives is an alias</td></tr>
+      </tbody>
+    </table>
+    <figcaption>Selected rows from the audit. The leftovers trace three library generations (pre-componentization, a first system, the current one): migration debt from limited cleanup time, not design intent.</figcaption>
+  </figure>
+</section>
+
+<section class="chapter" aria-labelledby="c2">
+  <div class="prose">
+    <p class="lede-num">The architecture</p>
+    <h2 id="c2">Five collections, each switching on its own</h2>
+    <p>Brand, theme, surface context and container size are independent questions, so each got its own collection with its own modes. Values flow down an alias chain; switching a mode at any level re-resolves everything below it. Components bind only to Context for colour, Layout for size and space, and Brand for font family and corner style.</p>
+  </div>
+  <figure>
+    <div class="diagram scroll-x" role="img" aria-label="Alias chain: Primitives (141 tokens) feed Brand (35, mode Somebet), which feeds Theme (70, modes Dark and Light), which feeds Context (38, five modes). Primitives also feed Layout (39, Compact and Expanded). Components bind to Context, Layout and Brand only.">
+      <svg viewBox="0 0 900 300" aria-hidden="true">
+        <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="d-arrow" d="M0 0L10 5L0 10z"/></marker></defs>
+        <rect class="d-box" x="10" y="40" width="150" height="96" rx="10"/><text class="d-t" x="26" y="70">Primitives</text><text class="d-n" x="26" y="92">141 tokens</text><text class="d-s" x="26" y="114">raw ramps, scales</text><text class="d-s" x="26" y="128">hidden from pickers</text>
+        <rect class="d-box" x="196" y="40" width="150" height="96" rx="10"/><text class="d-t" x="212" y="70">Brand</text><text class="d-n" x="212" y="92">35 · Somebet</text><text class="d-s" x="212" y="114">roles, fonts,</text><text class="d-s" x="212" y="128">corner style</text>
+        <rect class="d-box" x="382" y="40" width="150" height="96" rx="10"/><text class="d-t" x="398" y="70">Theme</text><text class="d-n" x="398" y="92">70 · Dark, Light</text><text class="d-s" x="398" y="114">surfaces, actions,</text><text class="d-s" x="398" y="128">status, borders</text>
+        <rect class="d-box" x="568" y="40" width="150" height="96" rx="10"/><text class="d-t" x="584" y="70">Context</text><text class="d-n" x="584" y="92">38 · 5 modes</text><text class="d-s" x="584" y="114">one generic set,</text><text class="d-s" x="584" y="128">set per container</text>
+        <rect class="d-box" x="196" y="190" width="150" height="80" rx="10"/><text class="d-t" x="212" y="220">Layout</text><text class="d-n" x="212" y="242">39 · Compact, Expanded</text><text class="d-s" x="212" y="260">space, size, type</text>
+        <rect class="d-key" x="754" y="110" width="136" height="80" rx="12"/><text class="d-t" x="770" y="142">Components</text><text class="d-s" x="770" y="162">bind Context,</text><text class="d-s" x="770" y="176">Layout, Brand</text>
+        <path class="d-line" d="M160 88H192" marker-end="url(#ar)"/>
+        <path class="d-line" d="M346 88H378" marker-end="url(#ar)"/>
+        <path class="d-line" d="M532 88H564" marker-end="url(#ar)"/>
+        <path class="d-line" d="M718 88C740 88 740 132 750 132" marker-end="url(#ar)"/>
+        <path class="d-line" d="M85 136V230H192" marker-end="url(#ar)"/>
+        <path class="d-line" d="M346 230H700C740 230 740 168 750 168" marker-end="url(#ar)"/>
+        <path class="d-line" d="M271 40V22H790V106" marker-end="url(#ar)" stroke-dasharray="4 4"/>
+        <text class="d-s" x="420" y="16">font family and corner style</text>
+      </svg>
+    </div>
+    <figcaption>The alias chain. Page sets Brand and Theme; a container (header, card, modal) sets Context; any container sets Layout by its own width, Compact below 1024 px and Expanded from 1024 px.</figcaption>
+  </figure>
+  <div class="prose">
+    <h3>Rules the build had to pass</h3>
+    <ul class="plain">
+      <li><b>No raw values above Primitives.</b> Every Brand, Theme, Context and Layout value is an alias.</li>
+      <li><b>No variable scoped to All.</b> Fill, text, stroke, gap, padding, radius and font each get their own scope, so pickers only offer what fits.</li>
+      <li><b>Code syntax on every variable.</b> <code>color/text/high</code> becomes <code>var(--color-text-high)</code>, which is what makes a generated CSS file possible.</li>
+      <li><b>Container sizes, not device breakpoints.</b> Layout modes are the Figma counterpart of container queries, so a card in a sidebar and a card on a phone behave the same way.</li>
+    </ul>
+    <p>The Context layer repeats Theme names on purpose. In the Default mode it maps one to one to Theme; Alternate, Accent and Header remap the same names to other surfaces. A component only ever references <code>surface</code> and <code>on-surface</code>, and every fill role has a content pair: <code>X</code> is the fill, <code>on-X</code> is everything placed on it.</p>
+    <p class="pull">The source repeated about 350 mostly raw values per brand, doubled for a light theme. Here a new brand sets about 80.</p>
+    <p>The trade-off is real. Theme mappings are identical for every brand, so a brand-specific exception has to become a Brand role. <code>brand/highlight</code> exists for exactly that: it is usually the primary colour, but a brand whose primary is red points it elsewhere so highlights never read as errors.</p>
+    <p>Accent and Alternate accent are the deliberate exception to the chain. They are strong, theme-independent surfaces, gold and vivid purple, so they look the same on a dark or light page and alias Brand roles directly instead of Theme slots. Brand gained five roles named by job for the second accent (<code>brand/alt-accent/surface</code>, <code>/surface-raised</code>, <code>/hover</code>, <code>/pressed</code>, <code>/subtle</code>), because defining a brand starts from its surfaces and how loud it is, not from a ramp of numbered steps.</p>
+  </div>
+</section>
+
+<section class="chapter" aria-labelledby="c3">
+  <div class="prose">
+    <p class="lede-num">The components</p>
+    <h2 id="c3">Nineteen components cover every element in the audited screens</h2>
+    <p>With context handled by modes, the components could shed most of their axes. Icons became instance-swap slots, never variants. Country-specific compositions such as the CPF field, the CEP address lookup and the registration steps stay patterns built from library parts, not library components.</p>
+  </div>
+  <figure>
+    <div class="bars" role="img" aria-label="Variant counts. Source base button 720 combinations, v1 Button 45. Source layout presets 240 counted combinations, v1 Button group 20. Source inputs: two duplicate versions plus four helper sets, v1: one Input with 7 states.">
+      <div class="bar"><div class="lab">Base button, source<small>7 axes, named after its revision</small></div><div class="track"><div class="fill old" style="width:100%"></div><span class="v" style="left:0;color:var(--paper)">720</span></div></div>
+      <div class="bar"><div class="lab">Button, v1<small>Hierarchy × Size × State</small></div><div class="track"><div class="fill" style="width:6.25%"></div><span class="v" style="left:6.25%">45</span></div></div>
+      <div class="bar"><div class="lab">Layout presets, source<small>one- and two-button presets</small></div><div class="track"><div class="fill old" style="width:33.3%"></div><span class="v" style="left:33.3%">240</span></div></div>
+      <div class="bar"><div class="lab">Button group, v1<small>1, 2 or 3 buttons, with order rules</small></div><div class="track"><div class="fill" style="width:2.8%"></div><span class="v" style="left:2.8%">20</span></div></div>
+    </div>
+    <figcaption>Variant counts drawn to one scale. The three-button preset in the source is not counted, so the real source figure is higher.</figcaption>
+  </figure>
+  <figure class="scroll-x">
+    <table class="tbl">
+      <thead><tr><th>Group</th><th>Components</th><th class="num">Variants</th></tr></thead>
+      <tbody>
+        <tr><td>Atoms</td><td>Icon (16 Phosphor glyphs, MIT), Button, Button group, Text link, Checkbox, Radio, Radio group</td><td class="num">90</td></tr>
+        <tr><td>Fields</td><td>Input, Select, Select list item, Phone field, Date field</td><td class="num">21</td></tr>
+        <tr><td>Feedback and navigation</td><td>Logo, Section header, Snackbar, Modal, Loading overlay, Site header, Trust footer, Card</td><td class="num">about 20</td></tr>
+      </tbody>
+    </table>
+    <figcaption>Icons are counted as glyphs, not variants. Site header and Trust footer lost their Size axis in the final phase, when they were moved onto Layout tokens.</figcaption>
+  </figure>
+  <figure class="shot">
+    <img src="img/buttons.png" width="2400" height="1563" loading="lazy" alt="The Button component in every hierarchy, size and state, repeated on four surfaces: Dark Default (navy), Light Default (off-white), Dark Accent (gold) and Light Alternate (navy card on a light page). Colours change per surface; the component has no colour variants.">
+    <figcaption>One Button, four surfaces. These are the test frames from the Figma file: each is the same set of instances, and only the frame's theme and context modes differ.</figcaption>
+  </figure>
+  <figure class="shot">
+    <img src="img/fields.png" width="2200" height="1766" loading="lazy" alt="Input in all states on Dark Default, Light Default and Dark Accent, and Select with its open list on Light Accent. Labels sit in a gap in the border; error fields have a 2px red border, a warning icon and a message.">
+    <figcaption>Input and Select in every state. The label sits in a gap in the border instead of covering it, so fields need no fill and read the same on gold as on navy.</figcaption>
+  </figure>
+</section>
+
+<section class="chapter" aria-labelledby="c4">
+  <div class="prose">
+    <p class="lede-num">The build</p>
+    <h2 id="c4">Decisions in one tool, building in another</h2>
+    <p>I split the work by kind. In claude.ai I ran the audit, made the architecture decisions, wrote a brief for each phase and reviewed the results. Claude Code, running on Sonnet with the Figma connection, did the building. No phase started until I had signed off the one before it against written acceptance checks.</p>
+  </div>
+  <ol class="phases">
+    <li><span class="n">1</span><div><h4>Foundations</h4><p>Five collections, scopes, code syntax, ten text styles, two elevation styles and a specimen page.</p><span class="check">Check: counts match the spec, every alias resolves, specimen switches all modes cleanly</span></div></li>
+    <li><span class="n">2</span><div><h4>Atoms</h4><p>Icon set, Button, Button group, Text link, Checkbox, Radio, Radio group.</p><span class="check">Check: variant counts as specified, every fill, stroke, padding and radius bound</span></div></li>
+    <li><span class="n">3</span><div><h4>Fields</h4><p>Input, Select, Select list item, Phone field and Date field, composed only from Input and Select instances.</p><span class="check">Check: all states render in both container sizes, trailing-action swap works</span></div></li>
+    <li><span class="n">4</span><div><h4>Feedback and navigation</h4><p>Snackbar, Modal, Loading overlay, Site header, Trust footer, Section header, Logo.</p><span class="check">Check: header renders in the Header context, modal as bottom sheet and dialog</span></div></li>
+    <li><span class="n">5</span><div><h4>Proof</h4><p>Registration steps 1 to 3, an error state and Login at both sizes, rebuilt from instances only.</p><span class="check">Check: theme and container size switch with no edits inside the screens</span></div></li>
+    <li><span class="n">6</span><div><h4>Export</h4><p>A brand file, a theme layer, context classes and container-query layout CSS, plus a demo page that re-skins when the brand file is swapped.</p><span class="check">Check: every CSS name equals the Figma code syntax; values checksummed against Figma</span></div></li>
+  </ol>
+  <div class="prose">
+    <p>Contrast was part of every check, measured across all ten theme and context combinations. In the final file, body text is at least 12.5:1, labels at least 7.8:1, button text at least 5.5:1, and error text and low-emphasis text at least 4.6:1.</p>
+  </div>
+  <figure class="shot">
+    <img src="img/proof.png" width="1800" height="2488" loading="lazy" alt="Three proof screens, registration step 1, registration step 3 and Login, shown twice: in the Dark theme on top and the Light theme below. The screens are identical instances; only the theme mode differs.">
+    <figcaption>The proof: registration and login screens built only from library instances. The Light row is the same three instances with the theme mode switched, with no edits inside the screens.</figcaption>
+  </figure>
+</section>
+
+<section class="chapter" aria-labelledby="c5">
+  <div class="prose">
+    <p class="lede-num">What the review caught</p>
+    <h2 id="c5">The checks passed. The proof screens still found a bug.</h2>
+    <p>My background is in software testing, and this is where it paid off. Building with an AI moves the risk from making to judging: the output arrives fast and looks finished, so the question is whether the checks actually test what matters.</p>
+  </div>
+  <div class="finds">
+    <div class="find"><span class="tag bug">Bug found in proof</span><h4>78 paints bound to the wrong collection</h4><p>Text link, Checkbox, Radio and Radio group were bound to Theme instead of Context. They passed "nothing unbound", but ignored context modes, which showed up as a dark-gold "Forgot password?" link on a navy card. All 78 were rebound. The acceptance checks now test which collection a component binds to, not only that it is bound.</p></div>
+    <div class="find"><span class="tag fix">Fixed in review</span><h4>An invisible hover state</h4><p>In the Header context, secondary hover resolved to the header colour itself: 1.0:1 in Dark. Remapped, it is now 8.4:1 for hover and 4.6:1 for pressed, and secondary and tertiary states step along one navy hue instead of jumping to grey.</p></div>
+    <div class="find"><span class="tag bug">Gap from proof</span><h4>A size axis that contradicted the model</h4><p>Site header and Trust footer still had a Compact / Expanded variant axis, so a screen in a wide container kept the narrow header. They now follow the container's Layout mode, and the logo switches form through a string token, <code>logo/form</code>.</p></div>
+    <div class="find"><span class="tag call">Design decision</span><h4>The login card stays on the page's surface</h4><p>The first Expanded login put the form on a high-contrast Alternate card. I reserved Alternate for things that must interrupt (modals, sheets, promos) and made the login a raised card in the Default context. The form is the page's purpose, not an exception to it.</p></div>
+      <div class="find"><span class="tag bug">Bug found after publish</span><h4>Two more wrong bindings, inside nested instances</h4><p>Reviewing the strong accent surfaces, the checkbox check stayed light on gold while the indeterminate dash turned navy. The check glyph and a footer icon were overrides bound to Theme. The earlier audit had skipped nested instances; the audit now walks instance overrides too.</p></div>
+    <div class="find"><span class="tag call">Design decision</span><h4>Accent means a strong surface</h4><p>The first Accent was a quiet purple tint of the page. I redefined it as gold in both themes, with a navy primary and a white secondary, and gave Alternate accent a vivid purple for a second offer on the same page, such as sportsbook next to casino.</p></div>
+      <div class="find"><span class="tag call">Design decision</span><h4>Passing the audit beats a nicer gold</h4><p>On light surfaces, gold text reads better than its WCAG 2 ratio suggests, a known weakness of the formula with yellows and oranges. I still split the colour: links and labels use #936a00 (4.55:1), the radio dot and focus ring use a yellower #ba8600 (3:1, the non-text minimum). EN 301 549 checks the WCAG number, so that is what the system meets.</p></div>
+    <div class="find"><span class="tag bug">Bug found in the 10-surface grid</span><h4>Disabled followed the page, not the surface</h4><p>With every component on all ten theme × context combinations, a near-black disabled checkbox appeared on the light card and a near-white one on the navy header. Disabled fills now have their own Alternate and Header slots, like every other colour on those surfaces.</p></div>
+    <div class="find"><span class="tag call">Design decision</span><h4>The header takes its parent's context</h4><p>Renamed Site header and unpinned from the Header context, so a brand can keep it on the page surface. The logo stays outside the token system, but a string variable picks its variant per surface, so the gold-safe logo appears on Accent automatically.</p></div>
+    <div class="find"><span class="tag bug">Found building the demo</span><h4>Solved in the browser, not in Figma</h4><p>The floating label hid the border with a background colour, which only works on one known surface: on a card, a block showed above the field. Browsers solve this natively, with a <code>fieldset</code> whose <code>legend</code> cuts a gap in the border. In Figma I rebuilt the border from pieces (corner, label, line, corner), so the gap follows the label. Fields now have no fill and work on any surface.</p></div>
+    <div class="find"><span class="tag call">Design decision</span><h4>An error message never moves the form</h4><p>Every Input and Select now reserves one line for its assistive text, shown or not. An error appears in place instead of pushing the rest of the form down, and a long form gets a calmer rhythm. A two-line message still shifts the layout, which is rare enough to accept.</p></div>
+    <div class="find"><span class="tag fix">Fixed in review</span><h4>Read-only looked more editable than editable</h4><p>The read-only field had a filled background, so it looked more inviting to fill in than a real input. It now has no fill and the quiet Disabled border, but keeps readable text, which is the only difference from Disabled.</p></div>
+  </div>
+  <div class="prose">
+    <p>The proof phase logged thirteen more library gaps, from labels that could not wrap to a missing Card component. I prioritised them, and the high and medium ones were fixed before export. Where the Figma Plugin API set a limit, I took the documented workaround and wrote the trade-off down: auto-layout direction cannot be bound to a variable, so the footer's support link and legal line now stack at both sizes.</p>
+  </div>
+</section>
+
+<section class="chapter" aria-labelledby="c6">
+  <div class="prose">
+    <p class="lede-num">Cost and time</p>
+    <h2 id="c6">Context size drives cost, not output</h2>
+    <p>I tracked every session from Claude Code's usage panel. Dollar figures are the list-price estimate it shows, not what a Pro subscription is billed.</p>
+  </div>
+  <div class="compare">
+    <div class="stat"><b>~12 h + 7 h</b><span>directed build work over 4 days, then review and fixes over 2 more, measured from session timestamps</span></div>
+    <div class="stat"><b>$36.71</b><span>API-equivalent compute across 11 build sessions, about 20% of one week's Pro allowance</span></div>
+    <div class="stat"><b>80–120 h</b><span>my estimate for the same scope by hand: 2–3 weeks for a senior designer. An estimate, not a measurement.</span></div>
+  </div>
+  <figure>
+    <div class="bars" id="costbars" role="img" aria-label="Estimated cost per build session in US dollars. Phase 1, 2.76. Phase 2a, 3.05. Phase 2b, 3.59. Phase 3, 5.96. Phase 4, 8.77. Phase 5A, 1.46. Phase 5B, 1.12. Phase 5C, 1.13. Phase 6A, 1.37. Phase 6B, 5.25. Phase 6C, 2.25."></div>
+    <figcaption>Estimated cost per session, with the cached context each one re-read. Phase 1 wrote the most output and was among the cheapest; Phase 4 wrote less than half as much and cost three times more, because every request re-sends the whole conversation.</figcaption>
+  </figure>
+  <div class="prose">
+    <p>The fix was procedural. From Phase 5 on, every checkpoint started a fresh session with a handover file, to keep context below 150k tokens. Phase 5 then built six full screens and a proof frame for $3.71 across three sessions, under half of Phase 4's single $8.77 session.</p>
+    <p>The part that does not shrink is the thinking. The audit and the architecture decisions took about 3.5 of the 12 hours, and that work recurs on any new project, because it is where the system is designed. Reviews during the build were deliberately light.</p>
+    <p>The design QA pass came after it and took about 7 hours over two days: a contrast audit of every component on all ten surfaces, a stronger Accent, a reworked field border, a working demo page and this write-up. I ran it on Opus 5.5 at medium effort instead of Sonnet, a deliberate trade: review needs fidelity more than speed. It used up to 32% of a week's Pro allowance, more than the whole build. Back-and-forth judgment costs more per hour than building from a brief, and it is also where most of the findings above came from.</p>
+  </div>
+</section>
+
+<section class="chapter" aria-labelledby="c7">
+  <div class="prose">
+    <p class="lede-num">What the CSS proves</p>
+    <h2 id="c7">The same names, in Figma and in code</h2>
+    <p>The export is generated from the variables in the file, because the Variables REST API is Enterprise-only. It produces four files: a brand file (45 values), a theme layer (81 values for each theme), context classes (40 values for each of five contexts) and a layout file where Expanded applies through <code>@container (min-width: 1024px)</code>. Components read <code>--ctx-*</code> variables only. The demo at the top of this page is built the same way: the card and header are painted entirely from those values. The <a href="demo/">full demo page</a> loads the four exported files directly, unchanged; the code is in the <a href="https://github.com/istvanpukli/somebet-ds">somebet-ds repository</a>.</p>
+  </div>
+  <figure class="scroll-x">
+    <table class="tbl">
+      <thead><tr><th>Figma variable</th><th>CSS</th><th>Dark · Default</th><th>Dark · Alternate</th></tr></thead>
+      <tbody>
+        <tr><td><code>Context / surface</code></td><td><code>--ctx-surface</code></td><td class="mono">#0c1b3b</td><td class="mono">#f8f7f3</td></tr>
+        <tr><td><code>Context / on-surface/high</code></td><td><code>--ctx-on-surface-high</code></td><td class="mono">#f8f7f3</td><td class="mono">#0c1b3b</td></tr>
+        <tr><td><code>Context / on-surface/highlight</code></td><td><code>--ctx-on-surface-highlight</code></td><td class="mono">#e9a800</td><td class="mono">#936a00</td></tr>
+        <tr><td><code>Context / error</code></td><td><code>--ctx-error</code></td><td class="mono">#ef7270</td><td class="mono">#c6363a</td></tr>
+      </tbody>
+    </table>
+    <figcaption>One name, re-resolved per surface. The highlight darkens from gold to #936a00 on the light card, the lightest gold that still passes 4.5:1 as text.</figcaption>
+  </figure>
+</section>
+
+<section class="chapter" aria-labelledby="c8">
+  <div class="prose">
+    <p class="lede-num">Takeaways</p>
+    <h2 id="c8">What I'd carry into the next system</h2>
+  </div>
+  <ul class="take">
+    <li>Test the binding, not just its presence.<small>"Every paint is bound" passed while 78 paints pointed at the wrong layer. Checks have to describe the behaviour you want, the way a test suite would.</small></li>
+    <li>Put context on containers.<small>It removed whole variant axes, and it is the decision that made the light theme and the header almost free.</small></li>
+    <li>Keep AI sessions short and handed over.<small>Cost tracked how much context each request carried. Fresh sessions at checkpoints cut cost by more than half with no loss of quality.</small></li>
+    <li>Know what is out of scope.<small>v1 leaves out Code Connect, motion and an accessibility audit beyond contrast. Hand-defined colour ramps are the next optimisation: generating them from one base colour per role would cut a new brand to about 10 inputs.</small></li>
+  </ul>
+</section>
+
+<footer>
+  <span>István Pukli · Product designer</span>
+  <span>Built in Figma with native variables · Somebet is a fictional brand</span>
+</footer>
+</div>
+
+<script>
+const CTX = {"Dark|Default":{"surface":"#0c1b3b","surface-variant":"#1a2e56","on-surface/high":"#f8f7f3","on-surface/medium":"#cdcdcd","on-surface/low":"#95989d","on-surface/highlight":"#e9a800","border/default":"#95989d","primary":"#e9a800","primary-hover":"#f4cc83","primary-pressed":"#c68b00","on-primary":"#0c1b3b","secondary":"#1a2e56","secondary-hover":"#395086","on-secondary":"#f8f7f3","tertiary":"#00000000","tertiary-hover":"#395086","on-tertiary":"#f8f7f3","error":"#ef7270"},
+"Dark|Alternate":{"surface":"#f8f7f3","surface-variant":"#ffffff","on-surface/high":"#0c1b3b","on-surface/medium":"#474a52","on-surface/low":"#61646b","on-surface/highlight":"#936a00","border/default":"#61646b","primary":"#e9a800","primary-hover":"#f4cc83","primary-pressed":"#c68b00","on-primary":"#0c1b3b","secondary":"#1a2e56","secondary-hover":"#395086","on-secondary":"#f8f7f3","tertiary":"#00000000","tertiary-hover":"#b4c1dd","on-tertiary":"#0c1b3b","error":"#c6363a"},
+"Dark|Accent":{"surface":"#e9a800","surface-variant":"#efba56","on-surface/high":"#0c1b3b","on-surface/medium":"#1a2e56","on-surface/low":"#293f6e","on-surface/highlight":"#1d1a4a","border/default":"#293f6e","primary":"#0c1b3b","primary-hover":"#1a2e56","primary-pressed":"#293f6e","on-primary":"#f8f7f3","secondary":"#ffffff","secondary-hover":"#e9e9e6","on-secondary":"#0c1b3b","tertiary":"#00000000","tertiary-hover":"#f4cc83","on-tertiary":"#0c1b3b","error":"#7a191c"},
+"Dark|Alternate accent":{"surface":"#4f3b99","surface-variant":"#352a70","on-surface/high":"#f8f7f3","on-surface/medium":"#e9e9e6","on-surface/low":"#cdcdcd","on-surface/highlight":"#f4cc83","border/default":"#cdcdcd","primary":"#e9a800","primary-hover":"#f4cc83","primary-pressed":"#c68b00","on-primary":"#0c1b3b","secondary":"#ffffff","secondary-hover":"#e9e9e6","on-secondary":"#0c1b3b","tertiary":"#00000000","tertiary-hover":"#6348b9","on-tertiary":"#f8f7f3","error":"#fbb9b6"},
+"Dark|Header":{"surface":"#1a2e56","surface-variant":"#1a2e56","on-surface/high":"#f8f7f3","on-surface/medium":"#cdcdcd","on-surface/low":"#95989d","on-surface/highlight":"#e9a800","border/default":"#95989d","primary":"#e9a800","primary-hover":"#f4cc83","primary-pressed":"#c68b00","on-primary":"#0c1b3b","secondary":"#f8f7f3","secondary-hover":"#cdcdcd","on-secondary":"#0c1b3b","tertiary":"#00000000","tertiary-hover":"#395086","on-tertiary":"#f8f7f3","error":"#ef7270"},
+"Light|Default":{"surface":"#f8f7f3","surface-variant":"#ffffff","on-surface/high":"#0c1b3b","on-surface/medium":"#474a52","on-surface/low":"#61646b","on-surface/highlight":"#936a00","border/default":"#61646b","primary":"#e9a800","primary-hover":"#f4cc83","primary-pressed":"#c68b00","on-primary":"#0c1b3b","secondary":"#1a2e56","secondary-hover":"#395086","on-secondary":"#f8f7f3","tertiary":"#00000000","tertiary-hover":"#b4c1dd","on-tertiary":"#0c1b3b","error":"#c6363a"},
+"Light|Alternate":{"surface":"#0c1b3b","surface-variant":"#1a2e56","on-surface/high":"#f8f7f3","on-surface/medium":"#cdcdcd","on-surface/low":"#95989d","on-surface/highlight":"#e9a800","border/default":"#95989d","primary":"#e9a800","primary-hover":"#f4cc83","primary-pressed":"#c68b00","on-primary":"#0c1b3b","secondary":"#1a2e56","secondary-hover":"#395086","on-secondary":"#f8f7f3","tertiary":"#00000000","tertiary-hover":"#395086","on-tertiary":"#f8f7f3","error":"#ef7270"},
+"Light|Accent":{"surface":"#e9a800","surface-variant":"#efba56","on-surface/high":"#0c1b3b","on-surface/medium":"#1a2e56","on-surface/low":"#293f6e","on-surface/highlight":"#1d1a4a","border/default":"#293f6e","primary":"#0c1b3b","primary-hover":"#1a2e56","primary-pressed":"#293f6e","on-primary":"#f8f7f3","secondary":"#ffffff","secondary-hover":"#e9e9e6","on-secondary":"#0c1b3b","tertiary":"#00000000","tertiary-hover":"#f4cc83","on-tertiary":"#0c1b3b","error":"#7a191c"},
+"Light|Alternate accent":{"surface":"#4f3b99","surface-variant":"#352a70","on-surface/high":"#f8f7f3","on-surface/medium":"#e9e9e6","on-surface/low":"#cdcdcd","on-surface/highlight":"#f4cc83","border/default":"#cdcdcd","primary":"#e9a800","primary-hover":"#f4cc83","primary-pressed":"#c68b00","on-primary":"#0c1b3b","secondary":"#ffffff","secondary-hover":"#e9e9e6","on-secondary":"#0c1b3b","tertiary":"#00000000","tertiary-hover":"#6348b9","on-tertiary":"#f8f7f3","error":"#fbb9b6"},
+"Light|Header":{"surface":"#0c1b3b","surface-variant":"#0c1b3b","on-surface/high":"#f8f7f3","on-surface/medium":"#cdcdcd","on-surface/low":"#95989d","on-surface/highlight":"#e9a800","border/default":"#95989d","primary":"#e9a800","primary-hover":"#f4cc83","primary-pressed":"#c68b00","on-primary":"#0c1b3b","secondary":"#f8f7f3","secondary-hover":"#cdcdcd","on-secondary":"#0c1b3b","tertiary":"#00000000","tertiary-hover":"#395086","on-tertiary":"#f8f7f3","error":"#ef7270"}};
+const LAYOUT = {Compact:{inset:16,insetC:16,section:24,header:56,form:400,hl:24,hlLh:32,logo:"Compact"},Expanded:{inset:24,insetC:20,section:32,header:64,form:480,hl:28,hlLh:36,logo:"Horizontal"}};
+const state = {theme:"Dark", ctx:"Default", lay:"Compact"};
+
+function paint(el, o){ for (const k in o) el.style.setProperty("--" + k.replace(/\//g,"-"), o[k]); }
+function lum(hex){ const c=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(v=>v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)); return .2126*c[0]+.7152*c[1]+.0722*c[2]; }
+function ratio(a,b){ const x=lum(a), y=lum(b); return (Math.max(x,y)+.05)/(Math.min(x,y)+.05); }
+
+function render(){
+  const stage=document.getElementById("stage"), hdr=document.getElementById("hdr"), card=document.getElementById("card");
+  const page=CTX[state.theme+"|Default"], head=CTX[state.theme+"|Header"], c=CTX[state.theme+"|"+state.ctx], L=LAYOUT[state.lay];
+  paint(stage,page); paint(hdr,head); paint(card,c);
+  stage.style.setProperty("--inset",L.inset+"px"); stage.style.setProperty("--inset-c",L.insetC+"px");
+  stage.style.setProperty("--section",L.section+"px"); stage.style.setProperty("--header-h",L.header+"px");
+  stage.style.setProperty("--form-w",L.form+"px"); stage.style.setProperty("--hl",L.hl+"px"); stage.style.setProperty("--hl-lh",L.hlLh+"px");
+  const raised = state.ctx==="Default";
+  card.classList.toggle("raised", raised);
+  const tpl = document.getElementById(L.logo==="Horizontal" ? "tpl-logo-h" : "tpl-logo-c");
+  document.getElementById("logo-slot").replaceChildren(tpl.content.cloneNode(true));
+  const bg = raised ? c["surface-variant"] : c.surface;
+  card.style.setProperty("--card-bg", bg);
+  const rows = [
+    [raised?"surface-variant":"surface", bg],
+    ["on-surface/high", c["on-surface/high"]],
+    ["on-surface/highlight", c["on-surface/highlight"]],
+    ["border/default", c["border/default"]],
+    ["error", c.error],
+    ["primary", c.primary]
+  ];
+  document.getElementById("toks").innerHTML = rows.map(([n,v])=>`<li><span class="sw" style="background:${v}"></span><span class="nm">--ctx-${n.replace(/\//g,"-")}</span><span class="hx">${v}</span></li>`).join("");
+  const r = [["Body text", c["on-surface/high"], 4.5],["Link highlight", c["on-surface/highlight"], 4.5],["Error text", c.error, 4.5],["Field border", c["border/default"], 3]];
+  document.getElementById("ratios").innerHTML = r.map(([n,v,min])=>{ const x=ratio(v,bg); return `<div class="ratio"><span>${n}</span><b class="${x>=min?"ok":""}">${x.toFixed(1)}:1</b></div>`; }).join("");
+}
+document.querySelectorAll(".seg").forEach(g=>{
+  g.addEventListener("click", e=>{
+    const b=e.target.closest("button"); if(!b) return;
+    state[g.dataset.key]=b.dataset.v;
+    g.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", x===b?"true":"false"));
+    render();
+  });
+});
+document.getElementById("forgot").addEventListener("click", e=>{ e.preventDefault(); document.getElementById("c5").scrollIntoView(); });
+render();
+
+const COST=[["Phase 1","Foundations",2.76,"5.1M"],["Phase 2a","Fix, icons, Button",3.05,"6.0M"],["Phase 2b","State fix, 5 components",3.59,"8.6M"],["Phase 3","Fields",5.96,"14.9M"],["Phase 4","Feedback, navigation",8.77,"28.0M"],["Phase 5A","Registration 1–2",1.46,"3.8M"],["Phase 5B","Step 3, Login",1.12,"2.4M"],["Phase 5C","Expanded, proof",1.13,"2.7M"],["Phase 6A","Header, footer on Layout",1.37,"3.0M"],["Phase 6B","Labels, Card, audit",5.25,"14.2M"],["Phase 6C","CSS export, demo",2.25,"5.9M"]];
+const max=8.77;
+document.getElementById("costbars").innerHTML = COST.map(([p,d,v,cache])=>{
+  const w=(v/max*100).toFixed(1);
+  return `<div class="bar"><div class="lab">${p}<small>${d}</small></div><div class="track"><div class="fill${v===max?" hot":""}" style="width:${w}%"></div><span class="v" style="${w>55?"left:0;color:var(--paper)":"left:"+w+"%"}">$${v.toFixed(2)} · ${cache} cached</span></div></div>`;
+}).join("");
+</script>
 </body>
 </html>
