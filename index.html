@@ -350,6 +350,7 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
     <p class="pull">The source repeated about 350 mostly raw values per brand, doubled for a light theme. Here a new brand sets about 80.</p>
     <p>The trade-off is real. Theme mappings are identical for every brand, so a brand-specific exception has to become a Brand role. <code>brand/highlight</code> exists for exactly that: it is usually the primary colour, but a brand whose primary is red points it elsewhere so highlights never read as errors.</p>
     <p>Accent and Alternate accent are the deliberate exception to the chain. They are strong, theme-independent surfaces, gold and vivid purple, so they look the same on a dark or light page and alias Brand roles directly instead of Theme slots. Brand gained five roles named by job for the second accent (<code>brand/alt-accent/surface</code>, <code>/surface-raised</code>, <code>/hover</code>, <code>/pressed</code>, <code>/subtle</code>), because defining a brand starts from its surfaces and how loud it is, not from a ramp of numbered steps.</p>
+    <p>That is where the ten surfaces in the title come from: five contexts (Default, Alternate, Accent, Alternate accent and Header) on two themes, Dark and Light. Every component was checked on all ten, each in its own 5 × 2 grid of test frames.</p>
   </div>
 </section>
 
