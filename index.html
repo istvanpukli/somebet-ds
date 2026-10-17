@@ -231,12 +231,12 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
 <header class="hero">
   <p class="kicker">Case study · Design system build · October 2026</p>
   <h1>One login form. Ten surfaces. <em>Zero colour variants.</em></h1>
-  <p class="standfirst">I rebuilt the registration and login UI of a regulated betting product as a themeable Figma library on native variables, proved it on six real screens and exported it to working CSS. I designed the system; Claude Code did the building, in reviewed phases.</p>
+  <p class="standfirst">I rebuilt the registration and login UI of a regulated betting product as a themeable Figma library on native variables, proved it on six real screens and exported it to working CSS. I designed the system and paired with Claude: Claude Opus 5.5 for planning and review, Claude Sonnet 5.5 in Claude Code for the building, in reviewed phases.</p>
   <dl class="facts">
-    <div><dt>Role</dt><dd>System designer and reviewer, directing AI builds</dd></div>
+    <div><dt>Role</dt><dd>System designer and reviewer, directing AI-assisted builds</dd></div>
     <div><dt>Output</dt><dd>5 collections, 350 variables, 19 components, 6 proof screens</dd></div>
     <div><dt>Time</dt><dd>About 12 hours to build over 4 days, plus about 7 hours of review and fixes</dd></div>
-    <div><dt>Compute</dt><dd>Build: about $37 at list price, 20% of one week's Pro allowance. Review: up to 32% more</dd></div>
+    <div><dt>Compute</dt><dd>Build: about $37 at list price, 20% of one week's Claude Pro allowance. Review: up to 32% more</dd></div>
   </dl>
 </header>
 
@@ -398,7 +398,8 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
   <div class="prose">
     <p class="lede-num">The build</p>
     <h2 id="c4">Decisions in one tool, building in another</h2>
-    <p>I split the work by kind. In claude.ai I ran the audit, made the architecture decisions, wrote a brief for each phase and reviewed the results. Claude Code, running on Sonnet with the Figma connection, did the building. No phase started until I had signed off the one before it against written acceptance checks.</p>
+    <p>This project was also a test bench for my AI-assisted design workflow. I wanted to refine how I split thinking from building, and to try the new Claude 5.5 model pair on real design-system work: Claude Opus 5.5 for judgement, Claude Sonnet 5.5 for execution. One question ran through every phase: how effective is Sonnet 5.5 at building in Figma from a written brief, and how hungry is it for context and usage? The answers are in the cost section below.</p>
+    <p>I split the work by kind, all in the Claude desktop app. In a Claude chat with Opus 5.5 I ran the audit, made the architecture decisions, wrote a brief for each phase and reviewed the results. Claude Code, running Sonnet 5.5 with the Figma connection, did the building. No phase started until I had signed off the one before it against written acceptance checks.</p>
   </div>
   <ol class="phases">
     <li><span class="n">1</span><div><h4>Foundations</h4><p>Five collections, scopes, code syntax, ten text styles, two elevation styles and a specimen page.</p><span class="check">Check: counts match the spec, every alias resolves, specimen switches all modes cleanly</span></div></li>
@@ -446,11 +447,11 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
   <div class="prose">
     <p class="lede-num">Cost and time</p>
     <h2 id="c6">Context size drives cost, not output</h2>
-    <p>I tracked every session from Claude Code's usage panel. Dollar figures are the list-price estimate it shows, not what a Pro subscription is billed.</p>
+    <p>I tracked every build session from Claude Code's usage panel. Dollar figures are the list-price estimate it shows, not what a Claude Pro subscription is billed.</p>
   </div>
   <div class="compare">
     <div class="stat"><b>~12 h + 7 h</b><span>directed build work over 4 days, then review and fixes over 2 more, measured from session timestamps</span></div>
-    <div class="stat"><b>$36.71</b><span>API-equivalent compute across 11 build sessions, about 20% of one week's Pro allowance</span></div>
+    <div class="stat"><b>$36.71</b><span>API-equivalent compute across 11 build sessions, about 20% of one week's Claude Pro allowance</span></div>
     <div class="stat"><b>80–120 h</b><span>my estimate for the same scope by hand: 2–3 weeks for a senior designer. An estimate, not a measurement.</span></div>
   </div>
   <figure>
@@ -460,7 +461,7 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
   <div class="prose">
     <p>The fix was procedural. From Phase 5 on, every checkpoint started a fresh session with a handover file, to keep context below 150k tokens. Phase 5 then built six full screens and a proof frame for $3.71 across three sessions, under half of Phase 4's single $8.77 session.</p>
     <p>The part that does not shrink is the thinking. The audit and the architecture decisions took about 3.5 of the 12 hours, and that work recurs on any new project, because it is where the system is designed. Reviews during the build were deliberately light.</p>
-    <p>The design QA pass came after it and took about 7 hours over two days: a contrast audit of every component on all ten surfaces, a stronger Accent, a reworked field border, a working demo page and this write-up. I ran it on Opus 5.5 at medium effort instead of Sonnet, a deliberate trade: review needs fidelity more than speed. It used up to 32% of a week's Pro allowance, more than the whole build. Back-and-forth judgment costs more per hour than building from a brief, and it is also where most of the findings above came from.</p>
+    <p>The design QA pass came after it and took about 7 hours over two days: a contrast audit of every component on all ten surfaces, a stronger Accent, a reworked field border, a working demo page and this write-up. I ran it on Claude Opus 5.5 at medium effort instead of Sonnet 5.5, a deliberate trade: review needs fidelity more than speed. It used up to 32% of a week's Claude Pro allowance, more than the whole build. Back-and-forth judgment costs more per hour than building from a brief, and it is also where most of the findings above came from.</p>
   </div>
 </section>
 

@@ -36,4 +36,4 @@ A new brand ships one file with the same 45 brand roles; theme, context and layo
 - Icons and logos are exported from the Figma library as SVG; they are not redrawn.
 - No build step: open `demo/index.html` in a browser, or serve the folder.
 
-Designed by István Pukli. Built with Claude Code from reviewed, phase-by-phase briefs.
+Designed by István Pukli. Built with Claude: Claude Opus 5.5 for planning and review, Claude Sonnet 5.5 in Claude Code for the build, from reviewed, phase-by-phase briefs.
