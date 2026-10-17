@@ -142,8 +142,9 @@
   /* The assistive row always keeps its one-line height (as in Figma), so an error never shifts the layout. */
   .input .assistive { margin: 0; min-height: var(--type-body-small-line-height); padding: 0 var(--space-inset-control); font-size: var(--type-body-small-size); line-height: var(--type-body-small-line-height); color: var(--ctx-on-surface-medium); }
   .input.error .assistive { color: var(--ctx-error); }
-  .actions { display: grid; gap: var(--space-stack-group); }
-  .link { color: var(--ctx-on-surface-highlight); text-align: center; text-decoration: underline; }
+  .actions { display: grid; gap: var(--space-inline-button-group); } /* Button group, vertical: 8px */
+  /* Text link (Figma "Text link"): body size, Medium, underlined, highlight colour, left-aligned under the fields */
+  .link { justify-self: start; color: var(--ctx-on-surface-highlight); font-size: var(--type-body-size); line-height: var(--type-body-line-height); font-weight: 500; text-decoration: underline; }
 
   /* Buttons: sizes and min widths from Layout, colours from Context */
   .btn {
@@ -350,10 +351,11 @@
                     <p class="assistive" id="pw-msg"></p>
                   </div>
                   <label class="checkbox"><input type="checkbox" name="remember"> Remember me</label>
+                  <a class="link" href="#">Forgot password?</a>
                 </div>
                 <div class="actions">
                   <button class="btn block" type="submit">Log in</button>
-                  <a class="link" href="#">Forgot your password?</a>
+                  <button class="btn tertiary block" type="button">Create an account</button>
                 </div>
               </form>
             </section>
