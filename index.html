@@ -203,6 +203,8 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;padding-right:0
 .stat{border-top:2px solid var(--ink);padding-top:12px}
 .stat b{display:block;font-family:var(--display);font-weight:700;font-size:clamp(2rem,4vw,2.8rem);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .stat span{display:block;font-size:.9rem;color:var(--ink-soft);margin-top:6px}
+.srcnote{font-size:.85rem;color:var(--ink-soft);max-width:72ch;margin:-8px 0 28px}
+.srcnote a{color:inherit}
 
 .demo-more{margin:-32px 0 clamp(56px,9vw,96px);font-size:.95rem;color:var(--ink-soft);max-width:66ch}
 .demo-more a{color:var(--ink)}
@@ -453,6 +455,7 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
     <div class="stat"><b>$36.71</b><span>API-equivalent compute across 11 build sessions, about 20% of one week's Claude Pro allowance</span></div>
     <div class="stat"><b>80–120 h</b><span>my estimate for the same scope by hand: 2–3 weeks for a senior designer. An estimate, not a measurement.</span></div>
   </div>
+  <p class="srcnote">The 100 hours in the title is deliberately conservative. Published scoping guides put a solo token system with 15–20 core components at 2–4 weeks (<a href="https://artofstyleframe.com/blog/how-to-build-design-system-figma/">Art of Styleframe</a>), a focused team's first system at 6–8 weeks (<a href="https://www.925studios.co/blog/how-to-build-design-system-from-scratch-2026">925 Studios</a>), and DesignWhine's phase ranges for audit, foundations, token architecture and components add up to at least 160 hours for this scope (<a href="https://www.designwhine.com/how-to-estimate-creating-a-design-system-in-hours/">DesignWhine</a>). None of these figures includes documentation, which this build also leaves out.</p>
   <figure>
     <div class="bars" id="costbars" role="img" aria-label="Estimated cost per build session in US dollars. Phase 1, 2.76. Phase 2a, 3.05. Phase 2b, 3.59. Phase 3, 5.96. Phase 4, 8.77. Phase 5A, 1.46. Phase 5B, 1.12. Phase 5C, 1.13. Phase 6A, 1.37. Phase 6B, 5.25. Phase 6C, 2.25."></div>
     <figcaption>Estimated cost per session, with the cached context each one re-read. Phase 1 wrote the most output and was among the cheapest; Phase 4 wrote less than half as much and cost three times more, because every request re-sends the whole conversation.</figcaption>
