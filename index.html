@@ -8,7 +8,7 @@
 <meta name="author" content="István Pukli">
 <link rel="canonical" href="https://istvanpukli.github.io/somebet-ds/">
 <meta property="og:type" content="article">
-<meta property="og:title" content="One login form. Ten surfaces. Zero colour variants.">
+<meta property="og:title" content="I design, Opus assists, Sonnet builds. A design system in 20 hours instead of 100.">
 <meta property="og:description" content="How I rebuilt a betting product's registration and login UI as a themeable Figma library on native variables, proved it on real screens and exported it to working CSS.">
 <meta property="og:url" content="https://istvanpukli.github.io/somebet-ds/">
 <meta property="og:image" content="https://istvanpukli.github.io/somebet-ds/img/og.png">
@@ -231,13 +231,13 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
 
 <header class="hero">
   <p class="kicker">Case study · Design system build · October 2026</p>
-  <h1>One login form. Ten surfaces. <em>Zero colour variants.</em></h1>
+  <h1>I design, Opus assists, Sonnet builds. <em>A design system in 20 hours instead of 100.</em></h1>
   <p class="standfirst">I rebuilt the registration and login UI of a regulated betting product as a themeable Figma library on native variables, proved it on six real screens and exported it to working CSS. I designed the system and paired with Claude: Claude Opus 5.5 for planning and review, Claude Sonnet 5.5 in Claude Code for the building, in reviewed phases.</p>
   <dl class="facts">
     <div><dt>Role</dt><dd>System designer and reviewer, directing AI-assisted builds</dd></div>
     <div><dt>Output</dt><dd>5 collections, 350 variables, 19 components, 6 proof screens</dd></div>
-    <div><dt>Time</dt><dd>About 12 hours to build over 4 days, plus about 7 hours of review and fixes</dd></div>
-    <div><dt>Compute</dt><dd>Build: about $37 at list price, 20% of one week's Claude Pro allowance. Review: up to 32% more</dd></div>
+    <div><dt>Time</dt><dd>About 12 hours to build over 4 days, plus about 8 hours of review and fixes</dd></div>
+    <div><dt>Compute</dt><dd>Build: about $37 at list price, 20% of one week's Claude Pro allowance. Review, fixes and write-up: up to 52% of a week</dd></div>
   </dl>
 </header>
 
@@ -349,7 +349,7 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
     <p class="pull">The source repeated about 350 mostly raw values per brand, doubled for a light theme. Here a new brand sets about 80.</p>
     <p>The trade-off is real. Theme mappings are identical for every brand, so a brand-specific exception has to become a Brand role. <code>brand/highlight</code> exists for exactly that: it is usually the primary colour, but a brand whose primary is red points it elsewhere so highlights never read as errors.</p>
     <p>Accent and Alternate accent are the deliberate exception to the chain. They are strong, theme-independent surfaces, gold and vivid purple, so they look the same on a dark or light page and alias Brand roles directly instead of Theme slots. Brand gained five roles named by job for the second accent (<code>brand/alt-accent/surface</code>, <code>/surface-raised</code>, <code>/hover</code>, <code>/pressed</code>, <code>/subtle</code>), because defining a brand starts from its surfaces and how loud it is, not from a ramp of numbered steps.</p>
-    <p>That is where the ten surfaces in the title come from: five contexts (Default, Alternate, Accent, Alternate accent and Header) on two themes, Dark and Light. Every component was checked on all ten, each in its own 5 × 2 grid of test frames.</p>
+    <p>That gives the system its ten surfaces: five contexts (Default, Alternate, Accent, Alternate accent and Header) on two themes, Dark and Light. Every component was checked on all ten, each in its own 5 × 2 grid of test frames.</p>
   </div>
   <figure class="shot">
     <img src="img/surfaces.png" width="2200" height="1813" loading="lazy" alt="Ten copies of the foundations specimen in a grid. Columns are the five contexts: Default, Alternate, Accent, Alternate accent and Header. The top row is the Dark theme, the bottom row Light. Each shows surfaces, text emphasis, borders, button states and status colours resolved for that surface.">
@@ -449,7 +449,7 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
     <p>I tracked every build session from Claude Code's usage panel. Dollar figures are the list-price estimate it shows, not what a Claude Pro subscription is billed.</p>
   </div>
   <div class="compare">
-    <div class="stat"><b>~12 h + 7 h</b><span>directed build work over 4 days, then review and fixes over 2 more, measured from session timestamps</span></div>
+    <div class="stat"><b>~12 h + 8 h</b><span>directed build work over 4 days, then review and fixes over several more days, measured from session timestamps</span></div>
     <div class="stat"><b>$36.71</b><span>API-equivalent compute across 11 build sessions, about 20% of one week's Claude Pro allowance</span></div>
     <div class="stat"><b>80–120 h</b><span>my estimate for the same scope by hand: 2–3 weeks for a senior designer. An estimate, not a measurement.</span></div>
   </div>
@@ -460,7 +460,7 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
   <div class="prose">
     <p>The fix was procedural. From Phase 5 on, every checkpoint started a fresh session with a handover file, to keep context below 150k tokens. Phase 5 then built six full screens and a proof frame for $3.71 across three sessions, under half of Phase 4's single $8.77 session.</p>
     <p>The part that does not shrink is the thinking. The audit and the architecture decisions took about 3.5 of the 12 hours, and that work recurs on any new project, because it is where the system is designed. Reviews during the build were deliberately light.</p>
-    <p>The design QA pass came after it and took about 7 hours over two days: a contrast audit of every component on all ten surfaces, a stronger Accent, a reworked field border, a working demo page and this write-up. I kept it on Claude Opus 5.5 at medium effort, the same as the planning, instead of handing it to Sonnet 5.5: review needs fidelity more than speed. It used up to 32% of a week's Claude Pro allowance, more than the whole build. Back-and-forth judgment costs more per hour than building from a brief, and it is also where most of the findings above came from.</p>
+    <p>The design QA pass came after it and took about 8 hours over several days: a contrast audit of every component on all ten surfaces, a stronger Accent, a reworked field border, a working demo page and this write-up. I kept it on Claude Opus 5.5 at medium effort, the same as the planning, instead of handing it to Sonnet 5.5: review needs fidelity more than speed. Together with the write-up and publishing, it used up to 52% of a week's Claude Pro allowance, more than twice the whole build. Back-and-forth judgment costs more per hour than building from a brief, and it is also where most of the findings above came from.</p>
   </div>
 </section>
 
