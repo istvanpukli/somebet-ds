@@ -340,7 +340,7 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
   <div class="prose">
     <h3>Rules the build had to pass</h3>
     <ul class="plain">
-      <li><b>No raw values above Primitives.</b> Every Brand, Theme, Context and Layout value is an alias.</li>
+      <li><b>No raw values above Primitives.</b> Every Brand, Theme, Context and Layout value is an alias, apart from three text variables: the brand name and the two logo selectors.</li>
       <li><b>No variable scoped to All.</b> Fill, text, stroke, gap, padding, radius and font each get their own scope, so pickers only offer what fits.</li>
       <li><b>Code syntax on every variable.</b> <code>on-surface/high</code> becomes <code>var(--on-surface-high)</code>, which is what makes a generated CSS file possible.</li>
       <li><b>Container sizes, not device breakpoints.</b> Layout modes are the Figma counterpart of container queries, so a card in a sidebar and a card on a phone behave the same way.</li>
