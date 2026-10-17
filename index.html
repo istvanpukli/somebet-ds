@@ -288,7 +288,8 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
   <div class="prose">
     <p class="lede-num">The starting point</p>
     <h2 id="c1">Three generations of library in one sign-up flow</h2>
-    <p>The source was the Brazil registration and login work I designed at my previous employer: a compliance-heavy flow with identity data, address lookup and consent, live in a newly regulated market. Those screens drew on 68 distinct components and four typefaces. The library behind them was no longer available to me, so I set out to rebuild a clean version I could own, review and reuse.</p>
+    <p>The source was a registration and login flow I designed at my previous employer: compliance-heavy, with identity data, address lookup and consent, live in a newly regulated market. Those screens drew on 68 distinct components and four typefaces, and they carried three generations of library at once: pieces from before componentization, from a first design system and from the current one. Each migration had left the previous generation in use, so one flow mixed component versions, naming schemes and typefaces.</p>
+    <p>That library was no longer available to me, so I set out to rebuild a clean version I could own, review and reuse.</p>
     <p>One boundary came first. The original system's architecture could inform the design, but no token values, files or JSON were copied. The new system ships one fictional brand, Somebet, with its own palette, type and logo.</p>
     <p>The audit covered the registration component set, the login section and the desktop examples. These were the findings that shaped the build:</p>
   </div>
@@ -305,7 +306,7 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
         <tr><td>Brand duplication</td><td>22 brand token sets of about 350 tokens each, only 5–7% aliases</td><td>Brands as modes; everything above Primitives is an alias</td></tr>
       </tbody>
     </table>
-    <figcaption>Selected rows from the audit. The leftovers trace three library generations (pre-componentization, a first system, the current one): migration debt from limited cleanup time, not design intent.</figcaption>
+    <figcaption>Selected rows from the audit. The leftovers are migration debt from limited cleanup time, not design intent.</figcaption>
   </figure>
 </section>
 
