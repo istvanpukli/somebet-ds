@@ -270,7 +270,7 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
     <ul class="tok" id="toks"></ul>
     <h3>Contrast on this surface</h3>
     <div class="ratios" id="ratios"></div>
-    <p>Every colour here is the value the Figma file resolves for this theme and context. Here the header is set to the Header context, so it stays navy on a light page. The components themselves have no colour or context variants.</p>
+    <p>Every colour here is the value the Figma file resolves for this theme and context. Here the header is set to the Header context, so it stays navy on a light page. The components themselves have no colour or context variants, apart from the logo artwork.</p>
   </aside>
 </section>
 <p class="demo-more">This card is a quick preview. The <a href="demo/">full demo page</a> has a working login form with validation, a select, all three button types and a card that switches context; its <a href="https://github.com/istvanpukli/somebet-ds">source and tokens are on GitHub</a>.</p>
@@ -317,13 +317,13 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
     <p>Brand, theme, surface context and container size are independent questions, so each got its own collection with its own modes. Values flow down an alias chain; switching a mode at any level re-resolves everything below it. Components bind only to Context for colour, Layout for size and space, and Brand for font family and corner style.</p>
   </div>
   <figure>
-    <div class="diagram scroll-x" role="img" aria-label="Alias chain: Primitives (141 tokens) feed Brand (35, mode Somebet), which feeds Theme (70, modes Dark and Light), which feeds Context (38, five modes). Primitives also feed Layout (39, Compact and Expanded). Components bind to Context, Layout and Brand only.">
+    <div class="diagram scroll-x" role="img" aria-label="Alias chain: Primitives (145 tokens) feed Brand (45, mode Somebet), which feeds Theme (81, modes Dark and Light), which feeds Context (40, five modes). Primitives also feed Layout (39, Compact and Expanded). Components bind to Context, Layout and Brand only.">
       <svg viewBox="0 0 900 300" aria-hidden="true">
         <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="d-arrow" d="M0 0L10 5L0 10z"/></marker></defs>
-        <rect class="d-box" x="10" y="40" width="150" height="96" rx="10"/><text class="d-t" x="26" y="70">Primitives</text><text class="d-n" x="26" y="92">141 tokens</text><text class="d-s" x="26" y="114">raw ramps, scales</text><text class="d-s" x="26" y="128">hidden from pickers</text>
-        <rect class="d-box" x="196" y="40" width="150" height="96" rx="10"/><text class="d-t" x="212" y="70">Brand</text><text class="d-n" x="212" y="92">35 · Somebet</text><text class="d-s" x="212" y="114">roles, fonts,</text><text class="d-s" x="212" y="128">corner style</text>
-        <rect class="d-box" x="382" y="40" width="150" height="96" rx="10"/><text class="d-t" x="398" y="70">Theme</text><text class="d-n" x="398" y="92">70 · Dark, Light</text><text class="d-s" x="398" y="114">surfaces, actions,</text><text class="d-s" x="398" y="128">status, borders</text>
-        <rect class="d-box" x="568" y="40" width="150" height="96" rx="10"/><text class="d-t" x="584" y="70">Context</text><text class="d-n" x="584" y="92">38 · 5 modes</text><text class="d-s" x="584" y="114">one generic set,</text><text class="d-s" x="584" y="128">set per container</text>
+        <rect class="d-box" x="10" y="40" width="150" height="96" rx="10"/><text class="d-t" x="26" y="70">Primitives</text><text class="d-n" x="26" y="92">145 tokens</text><text class="d-s" x="26" y="114">raw ramps, scales</text><text class="d-s" x="26" y="128">hidden from pickers</text>
+        <rect class="d-box" x="196" y="40" width="150" height="96" rx="10"/><text class="d-t" x="212" y="70">Brand</text><text class="d-n" x="212" y="92">45 · Somebet</text><text class="d-s" x="212" y="114">roles, fonts,</text><text class="d-s" x="212" y="128">corner style</text>
+        <rect class="d-box" x="382" y="40" width="150" height="96" rx="10"/><text class="d-t" x="398" y="70">Theme</text><text class="d-n" x="398" y="92">81 · Dark, Light</text><text class="d-s" x="398" y="114">surfaces, actions,</text><text class="d-s" x="398" y="128">status, borders</text>
+        <rect class="d-box" x="568" y="40" width="150" height="96" rx="10"/><text class="d-t" x="584" y="70">Context</text><text class="d-n" x="584" y="92">40 · 5 modes</text><text class="d-s" x="584" y="114">one generic set,</text><text class="d-s" x="584" y="128">set per container</text>
         <rect class="d-box" x="196" y="190" width="150" height="80" rx="10"/><text class="d-t" x="212" y="220">Layout</text><text class="d-n" x="212" y="242">39 · Compact, Expanded</text><text class="d-s" x="212" y="260">space, size, type</text>
         <rect class="d-key" x="754" y="110" width="136" height="80" rx="12"/><text class="d-t" x="770" y="142">Components</text><text class="d-s" x="770" y="162">bind Context,</text><text class="d-s" x="770" y="176">Layout, Brand</text>
         <path class="d-line" d="M160 88H192" marker-end="url(#ar)"/>
@@ -343,7 +343,7 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
     <ul class="plain">
       <li><b>No raw values above Primitives.</b> Every Brand, Theme, Context and Layout value is an alias.</li>
       <li><b>No variable scoped to All.</b> Fill, text, stroke, gap, padding, radius and font each get their own scope, so pickers only offer what fits.</li>
-      <li><b>Code syntax on every variable.</b> <code>color/text/high</code> becomes <code>var(--color-text-high)</code>, which is what makes a generated CSS file possible.</li>
+      <li><b>Code syntax on every variable.</b> <code>on-surface/high</code> becomes <code>var(--on-surface-high)</code>, which is what makes a generated CSS file possible.</li>
       <li><b>Container sizes, not device breakpoints.</b> Layout modes are the Figma counterpart of container queries, so a card in a sidebar and a card on a phone behave the same way.</li>
     </ul>
     <p>The Context layer repeats Theme names on purpose. In the Default mode it maps one to one to Theme; Alternate, Accent and Header remap the same names to other surfaces. A component only ever references <code>surface</code> and <code>on-surface</code>, and every fill role has a content pair: <code>X</code> is the fill, <code>on-X</code> is everything placed on it.</p>
@@ -379,7 +379,7 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
       <tbody>
         <tr><td>Atoms</td><td>Icon (16 Phosphor glyphs, MIT), Button, Button group, Text link, Checkbox, Radio, Radio group</td><td class="num">90</td></tr>
         <tr><td>Fields</td><td>Input, Select, Select list item, Phone field, Date field</td><td class="num">21</td></tr>
-        <tr><td>Feedback and navigation</td><td>Logo, Section header, Snackbar, Modal, Loading overlay, Site header, Trust footer, Card</td><td class="num">about 20</td></tr>
+        <tr><td>Feedback and navigation</td><td>Logo, Section header, Snackbar, Modal, Loading overlay, Site header, Trust footer, Card</td><td class="num">18</td></tr>
       </tbody>
     </table>
     <figcaption>Icons are counted as glyphs, not variants. Site header and Trust footer lost their Size axis in the final phase, when they were moved onto Layout tokens.</figcaption>
