@@ -410,7 +410,7 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
     <li><span class="n">6</span><div><h4>Export</h4><p>A brand file, a theme layer, context classes and container-query layout CSS, plus a demo page that re-skins when the brand file is swapped.</p><span class="check">Check: every CSS name equals the Figma code syntax; values checksummed against Figma</span></div></li>
   </ol>
   <div class="prose">
-    <p>Contrast was part of every check, measured across all ten theme and context combinations. In the final file, body text is at least 12.5:1, labels at least 7.8:1, button text at least 5.5:1, and error text and low-emphasis text at least 4.6:1.</p>
+    <p>Contrast was part of every check, measured across all ten theme and context combinations. In the final file, body text is at least 8.1:1, labels at least 6.4:1, button text at least 5.5:1, and error text and low-emphasis text at least 4.6:1.</p>
   </div>
   <figure class="shot">
     <img src="img/proof.png" width="1800" height="2566" loading="lazy" alt="Three proof screens, registration step 1, registration step 3 and Login, shown twice: in the Dark theme on top and the Light theme below. The screens are identical instances; only the theme mode differs.">
@@ -426,7 +426,7 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
   </div>
   <div class="finds">
     <div class="find"><span class="tag bug">Bug found in proof</span><h4>78 paints bound to the wrong collection</h4><p>Text link, Checkbox, Radio and Radio group were bound to Theme instead of Context. They passed "nothing unbound", but ignored context modes, which showed up as a dark-gold "Forgot password?" link on a navy card. All 78 were rebound. The acceptance checks now test which collection a component binds to, not only that it is bound.</p></div>
-    <div class="find"><span class="tag fix">Fixed in review</span><h4>An invisible hover state</h4><p>In the Header context, secondary hover resolved to the header colour itself: 1.0:1 in Dark. Remapped, it is now 8.4:1 for hover and 4.6:1 for pressed, and secondary and tertiary states step along one navy hue instead of jumping to grey.</p></div>
+    <div class="find"><span class="tag fix">Fixed in review</span><h4>An invisible hover state</h4><p>In the Header context, secondary hover resolved to the header colour itself: 1.0:1 in Dark. Remapped, it is now 8.4:1 for hover and 4.6:1 for pressed. On the header, the secondary button later became an off-white button with neutral hover and pressed states.</p></div>
     <div class="find"><span class="tag bug">Gap from proof</span><h4>A size axis that contradicted the model</h4><p>Site header and Trust footer still had a Compact / Expanded variant axis, so a screen in a wide container kept the narrow header. They now follow the container's Layout mode, and the logo switches form through a string token, <code>logo/form</code>.</p></div>
     <div class="find"><span class="tag call">Design decision</span><h4>The login card stays on the page's surface</h4><p>The first Expanded login put the form on a high-contrast Alternate card. I reserved Alternate for things that must interrupt (modals, sheets, promos) and made the login a raised card in the Default context. The form is the page's purpose, not an exception to it.</p></div>
       <div class="find"><span class="tag bug">Bug found after publish</span><h4>Two more wrong bindings, inside nested instances</h4><p>Reviewing the strong accent surfaces, the checkbox check stayed light on gold while the indeterminate dash turned navy. The check glyph and a footer icon were overrides bound to Theme. The earlier audit had skipped nested instances; the audit now walks instance overrides too.</p></div>
@@ -439,7 +439,7 @@ footer{border-top:1px solid var(--line);padding-block:36px 64px;display:flex;fle
     <div class="find"><span class="tag fix">Fixed in review</span><h4>Read-only looked more editable than editable</h4><p>The read-only field had a filled background, so it looked more inviting to fill in than a real input. It now has no fill and the quiet Disabled border, but keeps readable text, which is the only difference from Disabled.</p></div>
   </div>
   <div class="prose">
-    <p>The proof phase logged thirteen more library gaps, from labels that could not wrap to a missing Card component. I prioritised them, and the high and medium ones were fixed before export. Where the Figma Plugin API set a limit, I took the documented workaround and wrote the trade-off down: auto-layout direction cannot be bound to a variable, so the footer's support link and legal line now stack at both sizes.</p>
+    <p>The proof phase logged thirteen library gaps in all, from labels that could not wrap to a missing Card component. I prioritised them, and the high and medium ones were fixed before export. Where the Figma Plugin API set a limit, I took the documented workaround and wrote the trade-off down: auto-layout direction cannot be bound to a variable, so the footer's support link and legal line now stack at both sizes.</p>
   </div>
 </section>
 
